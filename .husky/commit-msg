@@ -1,0 +1,2 @@
+# Validate commit message follows conventional commit format
+npx --no-install commitlint --edit $1
