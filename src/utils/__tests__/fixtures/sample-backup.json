@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "exportedAt": "2025-10-05T10:30:00.000Z",
+  "weeks": [
+    {
+      "year": 2025,
+      "week": 40,
+      "achievements": "**Completed Q4 planning**\n\n- Finalized roadmap\n- Aligned with stakeholders",
+      "learnings": "Learned about `IndexedDB` best practices",
+      "challenges": "Struggled with performance optimization",
+      "nextWeekFocus": "### Focus Areas\n\n- Start implementation\n- Code reviews",
+      "weekState": 4,
+      "createdAt": "2025-10-01T08:00:00.000Z",
+      "updatedAt": "2025-10-05T10:00:00.000Z"
+    },
+    {
+      "year": 2025,
+      "week": 39,
+      "achievements": "Shipped *major feature* to production",
+      "learnings": "",
+      "challenges": "```\n// Bug fix needed\nconst issue = \"memory leak\";\n```",
+      "nextWeekFocus": "",
+      "weekState": 5,
+      "createdAt": "2025-09-24T08:00:00.000Z",
+      "updatedAt": "2025-09-28T17:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "colorSettings": {
+      "colors": ["#EF9A9A", "#FFAB91", "#FFE082", "#C5E1A5", "#A5D6A7"],
+      "preset": "default"
+    },
+    "fiscalYearSettings": {
+      "startMonth": 0
+    }
+  }
+}

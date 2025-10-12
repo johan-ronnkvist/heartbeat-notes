@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Mimir is a progressive web application built with Vue 3, TypeScript, and Vite. It's designed to help professionals track and document their weekly achievements, progress, and learnings at work. The app serves as a digital memory keeper for career progress and accomplishments.
+Heartbeat Notes is a progressive web application built with Vue 3, TypeScript, and Vite. It's designed to help professionals track and document their weekly achievements, progress, and learnings at work. The app serves as a digital memory keeper for career progress and accomplishments.
 
 ## Architecture
 
@@ -93,3 +93,7 @@ When adding PWA icons, place them in the `public/` directory with the specified 
 This project requires Node.js version ^20.19.0 or >=22.12.0.
 
 - before starting the dev server, check if it's already running
+
+## Commit Requirements
+
+Before committing all checks must be passing, we never commit with --no-verify.

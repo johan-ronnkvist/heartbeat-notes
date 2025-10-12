@@ -16,11 +16,11 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
       manifest: {
-        name: 'Mimir - Career Progress Companion',
-        short_name: 'Mimir',
+        name: 'Heartbeat Notes',
+        short_name: 'Heartbeat',
         description:
           'Your personal career progress companion for tracking weekly achievements and learnings',
-        theme_color: '#ffffff',
+        theme_color: '#7f1d1d',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [

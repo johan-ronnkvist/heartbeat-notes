@@ -1,4 +1,4 @@
-# mimir
+# heartbeat-notes
 
 This template should help get you started developing with Vue 3 in Vite.
 
@@ -63,21 +63,21 @@ npm run test:e2e -- --debug
 npm run lint
 ```
 
-# Mimir
+# Heartbeat Notes
 
 **Your personal career progress companion**
 
-Mimir is a progressive web application designed to help professionals track and document their weekly achievements, progress, and learnings at work. Named after the Norse god of wisdom and knowledge, Mimir serves as your digital memory keeper, ensuring that no accomplishment—big or small—gets forgotten.
+Heartbeat Notes is a progressive web application designed to help professionals track and document their weekly achievements, progress, and learnings at work. It serves as your digital memory keeper, ensuring that no accomplishment—big or small—gets forgotten.
 
-## Why Mimir?
+## Why Heartbeat Notes?
 
-Career conversations, performance reviews, and end-of-year evaluations often catch us off guard. We struggle to remember the projects we completed months ago, the problems we solved, or the skills we developed along the way. Mimir solves this by providing a simple, consistent way to capture your professional journey week by week.
+Career conversations, performance reviews, and end-of-year evaluations often catch us off guard. We struggle to remember the projects we completed months ago, the problems we solved, or the skills we developed along the way. Heartbeat Notes solves this by providing a simple, consistent way to capture your professional journey week by week.
 
-With Mimir, you can:
+With Heartbeat Notes, you can:
 
 - 📝 Document weekly wins, learnings, and progress
 - 🎯 Build a comprehensive record of your professional growth
 - 💼 Have concrete examples ready for career discussions and reviews
 - 🚀 Reflect on your achievements and identify patterns in your development
 
-Whether you're preparing for a promotion, updating your resume, or simply wanting to celebrate your progress, Mimir ensures your hard work is never overlooked.
+Whether you're preparing for a promotion, updating your resume, or simply wanting to celebrate your progress, Heartbeat Notes ensures your hard work is never overlooked.

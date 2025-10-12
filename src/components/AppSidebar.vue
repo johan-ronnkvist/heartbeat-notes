@@ -1,90 +1,44 @@
 <template>
   <div class="sidebar">
     <div class="sidebar-header">
-      <h1 class="app-title">Mimir</h1>
-      <p class="app-subtitle">Career Progress Companion</p>
+      <h1 class="app-title">Heartbeat Notes</h1>
+      <p class="app-subtitle">Weekly Reflections</p>
     </div>
 
     <nav class="sidebar-nav">
       <ul class="nav-list">
         <li class="nav-item">
-          <router-link to="/" class="nav-link">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9,22 9,12 15,12 15,22" />
-            </svg>
-            Dashboard
+          <router-link to="/home" class="nav-link">
+            <Home class="nav-icon" />
+            Home
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/weekly-log" class="nav-link">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14,2 14,8 20,8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10,9 9,9 8,9" />
-            </svg>
-            Weekly Log
+          <router-link to="/notes" class="nav-link">
+            <NotebookPen class="nav-icon" />
+            Notes
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/achievements" class="nav-link">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-              <path d="M4 22h16" />
-              <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-              <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-              <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-            </svg>
-            Achievements
+          <router-link
+            to="/review"
+            class="nav-link"
+            :class="{ 'has-subnav': availableYears.length > 0 }"
+          >
+            <Calendar class="nav-icon" />
+            Review
           </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link to="/insights" class="nav-link">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
-            </svg>
-            Insights
-          </router-link>
+          <ul v-if="availableYears.length > 0 && isReviewActive" class="subnav-list">
+            <li v-for="year in availableYears" :key="year" class="subnav-item">
+              <router-link :to="`/review/${year}`" class="subnav-link">
+                {{ formatYearForDisplay(year) }}
+              </router-link>
+            </li>
+          </ul>
         </li>
         <li class="nav-item">
           <router-link to="/settings" class="nav-link">
-            <svg
-              class="nav-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m17-4a4 4 0 0 0-8 0m8 8a4 4 0 0 0-8 0" />
-            </svg>
+            <Settings class="nav-icon" />
             Settings
           </router-link>
         </li>
@@ -94,7 +48,83 @@
 </template>
 
 <script setup lang="ts">
-// Component logic will be added here as needed
+import { ref, onMounted, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { Home, NotebookPen, Calendar, Settings } from 'lucide-vue-next'
+import { db } from '@/utils/db'
+import { useSettingsStore } from '@/stores/settings'
+import { getFiscalYearFromWeek, formatFiscalYear } from '@/utils/fiscalYear'
+
+const route = useRoute()
+const settingsStore = useSettingsStore()
+const availableYears = ref<number[]>([])
+
+const isReviewActive = computed(() => {
+  return route.path.startsWith('/review')
+})
+
+const fiscalYearStartMonth = computed(() => settingsStore.fiscalYearSettings.startMonth)
+const isFiscalYearMode = computed(() => fiscalYearStartMonth.value !== 0)
+
+// Format year for display (FY 2025 or 2025)
+const formatYearForDisplay = (year: number): string => {
+  if (isFiscalYearMode.value) {
+    return formatFiscalYear(year)
+  }
+  return year.toString()
+}
+
+const loadAvailableYears = async () => {
+  const calendarYears = await db.getYearsWithData()
+
+  if (!isFiscalYearMode.value) {
+    // Calendar year mode: just return the years as-is
+    availableYears.value = calendarYears
+  } else {
+    // Fiscal year mode: convert calendar years to fiscal years
+    const fiscalYearsSet = new Set<number>()
+
+    for (const calendarYear of calendarYears) {
+      // Get all weeks with data for this calendar year
+      const weeks = await db.getWeeksByYear(calendarYear)
+
+      // For each week, determine which fiscal year it belongs to
+      for (const weekData of weeks) {
+        const fiscalYear = getFiscalYearFromWeek(
+          calendarYear,
+          weekData.week,
+          fiscalYearStartMonth.value,
+        )
+        fiscalYearsSet.add(fiscalYear)
+      }
+    }
+
+    // Convert to sorted array
+    availableYears.value = Array.from(fiscalYearsSet).sort((a, b) => b - a)
+  }
+}
+
+// Reload years when navigating to review page (to catch deletions)
+watch(
+  () => route.path,
+  (newPath) => {
+    if (newPath.startsWith('/review')) {
+      loadAvailableYears()
+    }
+  },
+)
+
+// Reload years when fiscal year settings change
+watch(
+  () => settingsStore.fiscalYearSettings.startMonth,
+  () => {
+    loadAvailableYears()
+  },
+)
+
+onMounted(() => {
+  loadAvailableYears()
+})
 </script>
 
 <style scoped>
@@ -175,5 +205,39 @@
   height: 1.25rem;
   margin-right: 0.75rem;
   flex-shrink: 0;
+}
+
+.subnav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.subnav-item {
+  margin: 0;
+}
+
+.subnav-link {
+  display: block;
+  padding: 0.5rem 1.5rem 0.5rem 3.5rem;
+  color: #9ca3af;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.subnav-link:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-left-color: #60a5fa;
+}
+
+.subnav-link.router-link-active {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-left-color: #3b82f6;
 }
 </style>

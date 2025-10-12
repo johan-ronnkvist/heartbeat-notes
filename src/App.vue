@@ -1,10 +1,30 @@
 <script setup lang="ts">
-import AppSidebar from './components/AppSidebar.vue'
+import { onMounted } from 'vue'
+import AppTopbar from './components/AppTopbar.vue'
+import { useSyncStore } from './stores/sync'
+import { performFullSync } from './utils/syncManager'
+
+const syncStore = useSyncStore()
+
+onMounted(async () => {
+  // Initialize sync store
+  await syncStore.init()
+
+  // If sync is enabled, perform initial sync to load data from file
+  if (syncStore.canSync) {
+    try {
+      await performFullSync()
+    } catch (e) {
+      console.error('Initial sync failed:', e)
+      // Don't block app initialization on sync failure
+    }
+  }
+})
 </script>
 
 <template>
   <div class="app-layout">
-    <AppSidebar />
+    <AppTopbar />
     <main class="main-content">
       <div class="content-container">
         <router-view />
@@ -16,13 +36,14 @@ import AppSidebar from './components/AppSidebar.vue'
 <style scoped>
 .app-layout {
   display: flex;
-  height: 100vh;
-  background: #f9fafb;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-theme-primary-lightest);
 }
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-top: 64px;
   overflow-y: auto;
 }
 
@@ -34,17 +55,8 @@ import AppSidebar from './components/AppSidebar.vue'
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-  }
-
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
+  .content-container {
+    padding: 1rem;
   }
 }
 </style>
