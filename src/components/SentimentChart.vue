@@ -53,6 +53,7 @@
             class="hover-area"
             @mouseenter="hoveredIndex = index"
             @mouseleave="hoveredIndex = null"
+            @click="handlePointClick(index)"
           />
           <!-- Emoji -->
           <text
@@ -61,6 +62,9 @@
             dominant-baseline="middle"
             class="emoji-point"
             :class="{ hovered: hoveredIndex === index }"
+            @mouseenter="hoveredIndex = index"
+            @mouseleave="hoveredIndex = null"
+            @click="handlePointClick(index)"
           >
             {{ point.emoji }}
           </text>
@@ -83,25 +87,24 @@
       </g>
 
       <!-- Tooltip -->
-      <g v-if="hoveredIndex !== null" class="tooltip-group">
+      <g v-if="hoveredIndex !== null" class="tooltip-group" style="pointer-events: none">
         <rect
-          :x="dataPoints[hoveredIndex].x - 40"
-          :y="dataPoints[hoveredIndex].y - 50"
-          width="80"
+          :x="dataPoints[hoveredIndex].x - 50"
+          :y="dataPoints[hoveredIndex].y - 60"
+          width="100"
           height="30"
           rx="4"
           fill="#1f2937"
-          opacity="0.9"
         />
         <text
           :x="dataPoints[hoveredIndex].x"
-          :y="dataPoints[hoveredIndex].y - 35"
+          :y="dataPoints[hoveredIndex].y - 42"
           text-anchor="middle"
-          font-size="14"
+          font-size="13"
           fill="white"
           font-weight="600"
         >
-          {{ dataPoints[hoveredIndex].emoji }} {{ dataPoints[hoveredIndex].value }}/5
+          {{ tooltipText(hoveredIndex) }}
         </text>
       </g>
     </svg>
@@ -120,7 +123,19 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const emit = defineEmits<{
+  weekClick: [week: WeeklyData]
+}>()
+
 const hoveredIndex = ref<number | null>(null)
+
+// Handle point click
+const handlePointClick = (index: number) => {
+  const weekData = props.weeklyData[index]
+  if (weekData) {
+    emit('weekClick', weekData)
+  }
+}
 
 // Chart dimensions - use viewBox to make it responsive
 const width = 1200
@@ -171,10 +186,19 @@ const dataPoints = computed(() => {
         value,
         emoji,
         hasValue: value !== null,
+        year: week.year,
+        week: week.week,
       }
     })
     .filter((p) => p.emoji) // Only include points with emojis
 })
+
+// Generate tooltip text
+const tooltipText = (index: number): string => {
+  const point = dataPoints.value[index]
+  if (!point) return ''
+  return `${point.year} • W${point.week}`
+}
 
 // Calculate monotone cubic spline control points (similar to Chart.js)
 const getMonotoneCubicControlPoints = (
