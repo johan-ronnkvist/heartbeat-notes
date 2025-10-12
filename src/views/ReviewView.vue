@@ -13,9 +13,12 @@
           <WeekRect
             v-for="week in getQuarterWeeksForGlance(quarter)"
             :key="week"
+            :week="week"
             :week-data="getWeekData(week)"
             :clickable="isWeekInPast(week)"
             :disabled="!isWeekInPast(week)"
+            :year="getYearForWeek(week)"
+            show-year-in-tooltip
             @click="navigateToWeek(week)"
           />
         </div>
@@ -170,6 +173,27 @@ const displayYear = computed(() => {
 // Get week data for a week number
 const getWeekData = (week: number): WeeklyData | null => {
   return weeklyDataMap.value.get(week) || null
+}
+
+// Get the calendar year for a given week number
+const getYearForWeek = (week: number): number => {
+  if (!isFiscalYearMode.value) {
+    return currentYear.value
+  }
+
+  // In fiscal year mode, determine which calendar year this week belongs to
+  const calendarYearWeeks = getCalendarWeeksForFiscalYear(
+    currentYear.value,
+    fiscalYearStartMonth.value,
+  )
+
+  for (const [year, weeks] of Object.entries(calendarYearWeeks)) {
+    if (weeks.includes(week)) {
+      return Number(year)
+    }
+  }
+
+  return currentYear.value
 }
 
 // Get the weeks to display in the "Year at a Glance" grid for a given quarter

@@ -78,7 +78,11 @@
     <div class="chart-section">
       <h3 class="section-title">Recent Weeks</h3>
       <div class="chart-container">
-        <SentimentChart :weekly-data="chartWeeks" :emoji-scale="emojiScale" />
+        <SentimentChart
+          :weekly-data="chartWeeks"
+          :emoji-scale="emojiScale"
+          @week-click="handleWeekClick"
+        />
       </div>
     </div>
   </div>
@@ -359,6 +363,21 @@ const handleWeekStatusSave = async (status: WeekStatus | null) => {
   weeklyStore.updateWeekState(status)
   await weeklyStore.saveCurrentWeek()
   currentWeekData.value = weeklyStore.currentWeekData
+}
+
+// Handle week click from chart
+const handleWeekClick = (weekData: WeeklyData) => {
+  const { year: currentYear, week: currentWeekNum } = currentWeek
+  if (weekData.year === currentYear && weekData.week === currentWeekNum) {
+    // Current week - use simple route
+    router.push({ name: 'notes' })
+  } else {
+    // Specific week - use parameterized route
+    router.push({
+      name: 'notes-specific',
+      params: { year: weekData.year.toString(), week: weekData.week.toString() },
+    })
+  }
 }
 
 // Load all data
