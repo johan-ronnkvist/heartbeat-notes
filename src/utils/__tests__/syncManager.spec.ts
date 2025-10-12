@@ -74,6 +74,7 @@ describe('syncManager', () => {
   describe('saveToFileSystem', () => {
     it('should save data to file system', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -114,6 +115,7 @@ describe('syncManager', () => {
 
     it('should handle file handle errors', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -136,6 +138,7 @@ describe('syncManager', () => {
 
     it('should handle write errors', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -171,6 +174,7 @@ describe('syncManager', () => {
   describe('loadFromFileSystem', () => {
     it('should load data from file system', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -188,6 +192,7 @@ describe('syncManager', () => {
 
     it('should handle empty files', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -221,6 +226,7 @@ describe('syncManager', () => {
 
     it('should handle read errors', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -404,6 +410,7 @@ describe('syncManager', () => {
   describe('performFullSync', () => {
     it('should perform full sync successfully', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -428,6 +435,7 @@ describe('syncManager', () => {
 
     it('should detect and resolve conflicts', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',
@@ -499,6 +507,7 @@ describe('syncManager', () => {
   describe('scheduleSave', () => {
     it('should debounce saves', async () => {
       const syncStore = useSyncStore()
+      await syncStore.init()
       syncStore.enabled = true
       syncStore.directoryHandle = {
         kind: 'directory',

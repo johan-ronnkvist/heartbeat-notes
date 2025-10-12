@@ -124,8 +124,9 @@ describe('useSyncStore', () => {
       expect(store.error).toBeNull()
     })
 
-    it('should compute isSyncAvailable correctly', () => {
+    it('should compute isSyncAvailable correctly', async () => {
       const store = useSyncStore()
+      await store.init()
       expect(store.isSyncAvailable).toBe(true)
     })
 
@@ -137,8 +138,9 @@ describe('useSyncStore', () => {
       expect(store.isConfigured).toBe(true)
     })
 
-    it('should compute canSync correctly', () => {
+    it('should compute canSync correctly', async () => {
       const store = useSyncStore()
+      await store.init()
       expect(store.canSync).toBe(false)
 
       store.directoryHandle = mockDirectoryHandle

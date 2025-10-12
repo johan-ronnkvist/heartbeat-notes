@@ -92,8 +92,9 @@ export const useSyncStore = defineStore('sync', () => {
   const lastSyncTime = ref<Date | null>(null)
   const status = ref<SyncStatus>('not-configured')
   const error = ref<string | null>(null)
+  const isPwaInstalled = ref(false)
 
-  const isSyncAvailable = computed(() => canUseSync())
+  const isSyncAvailable = computed(() => isPwaInstalled.value && canUseSync())
   const isConfigured = computed(() => directoryHandle.value !== null)
   const canSync = computed(() => isSyncAvailable.value && isConfigured.value && enabled.value)
 
@@ -283,10 +284,40 @@ export const useSyncStore = defineStore('sync', () => {
   }
 
   /**
+   * Update PWA installation status
+   */
+  function updatePwaStatus() {
+    isPwaInstalled.value = canUseSync()
+  }
+
+  /**
    * Initialize sync store
    */
   async function init() {
     loadState()
+
+    // Check initial PWA status
+    updatePwaStatus()
+
+    // Listen for display mode changes (PWA installation/uninstallation)
+    if (window.matchMedia) {
+      const standaloneQuery = window.matchMedia('(display-mode: standalone)')
+      const minimalUiQuery = window.matchMedia('(display-mode: minimal-ui)')
+
+      const handleDisplayModeChange = () => {
+        updatePwaStatus()
+      }
+
+      standaloneQuery.addEventListener('change', handleDisplayModeChange)
+      minimalUiQuery.addEventListener('change', handleDisplayModeChange)
+    }
+
+    // Re-check PWA status when page becomes visible (helps detect PWA installation)
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        updatePwaStatus()
+      }
+    })
 
     // Try to restore directory handle from IndexedDB
     const handle = await loadDirectoryHandle()
@@ -308,6 +339,7 @@ export const useSyncStore = defineStore('sync', () => {
     lastSyncTime,
     status,
     error,
+    isPwaInstalled,
     isSyncAvailable,
     isConfigured,
     canSync,
@@ -318,6 +350,7 @@ export const useSyncStore = defineStore('sync', () => {
     verifyPermission,
     getFileHandle,
     setStatus,
+    updatePwaStatus,
     init,
   }
 })

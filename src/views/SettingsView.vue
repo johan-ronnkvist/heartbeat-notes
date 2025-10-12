@@ -89,8 +89,8 @@
       </div>
     </div>
 
-    <!-- Local Sync Section (PWA Only) -->
-    <div v-if="syncStore.isSyncAvailable" class="settings-section">
+    <!-- Local Sync Section -->
+    <div class="settings-section">
       <div class="section-header">
         <h2 class="section-title">Local Sync</h2>
         <p class="section-description">
@@ -99,7 +99,25 @@
       </div>
 
       <div class="sync-management">
-        <div v-if="!syncStore.isConfigured" class="sync-setup">
+        <!-- PWA Installation Prompt -->
+        <div v-if="!syncStore.isSyncAvailable" class="pwa-prompt">
+          <div class="pwa-prompt-icon">📱</div>
+          <h3 class="pwa-prompt-title">Install Heartbeat Notes as an App</h3>
+          <p class="pwa-prompt-text">
+            Local sync requires Heartbeat Notes to be installed as a Progressive Web App (PWA).
+            Installing gives you app-like features including automatic local backups.
+          </p>
+          <div class="pwa-install-steps">
+            <p class="pwa-install-title">How to install:</p>
+            <ul class="pwa-install-list">
+              <li>Chrome/Edge: Click the install icon in the address bar or use the menu</li>
+              <li>Safari (iOS): Tap Share → Add to Home Screen</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Sync Configuration (PWA Only) -->
+        <div v-else-if="!syncStore.isConfigured" class="sync-setup">
           <p class="sync-setup-text">
             Choose a folder where Heartbeat will automatically save your data as you work.
           </p>
@@ -874,6 +892,70 @@ async function handleFileSelect(event: Event) {
   border-top: 1px solid #e5e7eb;
 }
 
+/* PWA Installation Prompt */
+.pwa-prompt {
+  padding: 2rem 1.5rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 0.75rem;
+  border: 2px solid #bae6fd;
+  text-align: center;
+}
+
+.pwa-prompt-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.pwa-prompt-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0c4a6e;
+  margin: 0 0 0.75rem 0;
+}
+
+.pwa-prompt-text {
+  font-size: 0.9375rem;
+  color: #075985;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pwa-install-steps {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  border: 1px solid #bae6fd;
+}
+
+.pwa-install-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0c4a6e;
+  margin: 0 0 0.75rem 0;
+  text-align: left;
+}
+
+.pwa-install-list {
+  text-align: left;
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #075985;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.pwa-install-list li {
+  margin-bottom: 0.5rem;
+}
+
+.pwa-install-list li:last-child {
+  margin-bottom: 0;
+}
+
 .sync-setup {
   display: flex;
   flex-direction: column;
@@ -1156,6 +1238,31 @@ async function handleFileSelect(event: Event) {
 
   .action-button {
     width: 100%;
+  }
+
+  .pwa-prompt {
+    padding: 1.5rem 1rem;
+  }
+
+  .pwa-prompt-icon {
+    font-size: 2.5rem;
+  }
+
+  .pwa-prompt-title {
+    font-size: 1rem;
+  }
+
+  .pwa-prompt-text {
+    font-size: 0.875rem;
+  }
+
+  .pwa-install-steps {
+    padding: 0.875rem 1rem;
+  }
+
+  .pwa-install-list {
+    font-size: 0.8125rem;
+    padding-left: 1.25rem;
   }
 }
 </style>
