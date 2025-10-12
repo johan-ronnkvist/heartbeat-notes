@@ -124,10 +124,11 @@ const tooltipText = computed(() => {
   if (props.label) {
     return props.label
   }
+  if (week.value !== undefined && props.year) {
+    return `${props.year} • W${week.value}`
+  }
   if (week.value !== undefined) {
-    return props.showYearInTooltip && props.year
-      ? `${props.year} • ${week.value}`
-      : `Week ${week.value}`
+    return `Week ${week.value}`
   }
   return ''
 })
@@ -255,7 +256,7 @@ const handleClick = () => {
   opacity: 0;
   pointer-events: none;
   margin-bottom: 0.5rem;
-  transition: opacity 0s;
+  transition: opacity 0s 0s;
   z-index: 10;
 }
 
