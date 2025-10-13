@@ -3,7 +3,10 @@
     <!-- Yearly Sentiment Overview -->
     <div class="sentiment-overview">
       <div class="overview-header">
-        <h2 class="section-title">{{ displayYear }}</h2>
+        <h2 class="section-title">
+          <span class="title-full">{{ displayYear }} at a Glance</span>
+          <span class="title-short">{{ displayYear }}</span>
+        </h2>
       </div>
 
       <!-- Quarter Selector -->
@@ -779,6 +782,10 @@ onMounted(() => {
   margin: 0;
 }
 
+.title-short {
+  display: none;
+}
+
 /* Toggle Switch */
 .toggle-label {
   display: flex;
@@ -1242,6 +1249,14 @@ onMounted(() => {
 
   .section-title {
     font-size: 1.125rem;
+  }
+
+  .title-full {
+    display: none;
+  }
+
+  .title-short {
+    display: inline;
   }
 
   .quarter-selector {
