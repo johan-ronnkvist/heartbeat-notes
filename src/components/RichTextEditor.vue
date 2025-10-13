@@ -1,6 +1,7 @@
 <template>
   <div class="rich-text-editor">
-    <div v-if="editor && !disabled" class="toolbar">
+    <!-- Desktop Toolbar -->
+    <div v-if="editor && !disabled" class="toolbar desktop-toolbar">
       <button
         type="button"
         @click="editor.chain().focus().toggleBold().run()"
@@ -67,18 +68,111 @@
         <TextQuote class="toolbar-icon" />
       </button>
     </div>
+
+    <!-- Mobile Toolbar -->
+    <div v-if="editor && !disabled" class="toolbar mobile-toolbar">
+      <button
+        type="button"
+        @click="editor.chain().focus().toggleBold().run()"
+        :class="{ 'is-active': editor.isActive('bold') }"
+        class="toolbar-button"
+        title="Bold"
+      >
+        <Bold class="toolbar-icon" />
+      </button>
+      <button
+        type="button"
+        @click="editor.chain().focus().toggleItalic().run()"
+        :class="{ 'is-active': editor.isActive('italic') }"
+        class="toolbar-button"
+        title="Italic"
+      >
+        <Italic class="toolbar-icon" />
+      </button>
+      <button
+        type="button"
+        @click="editor.chain().focus().toggleStrike().run()"
+        :class="{ 'is-active': editor.isActive('strike') }"
+        class="toolbar-button"
+        title="Strikethrough"
+      >
+        <Strikethrough class="toolbar-icon" />
+      </button>
+      <button
+        type="button"
+        @click="showMoreControls = !showMoreControls"
+        class="toolbar-button more-button"
+        :class="{ 'is-active': showMoreControls }"
+        title="More options"
+      >
+        <MoreHorizontal class="toolbar-icon" />
+      </button>
+
+      <!-- Expandable More Controls -->
+      <div v-if="showMoreControls" class="more-controls">
+        <button
+          type="button"
+          @click="editor.chain().focus().toggleCode().run()"
+          :class="{ 'is-active': editor.isActive('code') }"
+          class="toolbar-button"
+          title="Inline Code"
+        >
+          <Code class="toolbar-icon" />
+        </button>
+        <button
+          type="button"
+          @click="editor.chain().focus().toggleBulletList().run()"
+          :class="{ 'is-active': editor.isActive('bulletList') }"
+          class="toolbar-button"
+          title="Bullet List"
+        >
+          <List class="toolbar-icon" />
+        </button>
+        <button
+          type="button"
+          @click="editor.chain().focus().toggleOrderedList().run()"
+          :class="{ 'is-active': editor.isActive('orderedList') }"
+          class="toolbar-button"
+          title="Numbered List"
+        >
+          <ListOrdered class="toolbar-icon" />
+        </button>
+        <button
+          type="button"
+          @click="editor.chain().focus().toggleBlockquote().run()"
+          :class="{ 'is-active': editor.isActive('blockquote') }"
+          class="toolbar-button"
+          title="Blockquote"
+        >
+          <TextQuote class="toolbar-icon" />
+        </button>
+      </div>
+    </div>
+
     <editor-content :editor="editor" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { watch, onBeforeUnmount } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Typography from '@tiptap/extension-typography'
-import { Bold, Italic, Strikethrough, Code, List, ListOrdered, TextQuote } from 'lucide-vue-next'
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  Code,
+  List,
+  ListOrdered,
+  TextQuote,
+  MoreHorizontal,
+} from 'lucide-vue-next'
 import { editorToMarkdown, renderMarkdown } from '@/utils/markdown'
+
+// Mobile toolbar state
+const showMoreControls = ref(false)
 
 const props = defineProps<{
   modelValue: string
@@ -201,6 +295,73 @@ onBeforeUnmount(() => {
 .toolbar-icon {
   width: 16px;
   height: 16px;
+}
+
+/* Desktop/Mobile toolbar visibility */
+.desktop-toolbar {
+  display: flex;
+}
+
+.mobile-toolbar {
+  display: none;
+}
+
+/* Mobile toolbar styles */
+.more-button {
+  position: relative;
+}
+
+.more-controls {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .desktop-toolbar {
+    display: none;
+  }
+
+  .mobile-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .toolbar-button {
+    flex: 1;
+    min-width: 44px;
+    padding: 8px;
+  }
+
+  .more-controls {
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    padding: 6px;
+    gap: 3px;
+  }
+
+  .toolbar-button {
+    padding: 6px;
+    min-width: 40px;
+  }
+
+  .toolbar-icon {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 :deep(.ProseMirror) {
