@@ -3,7 +3,7 @@
     <!-- Yearly Sentiment Overview -->
     <div class="sentiment-overview">
       <div class="overview-header">
-        <h2 class="section-title">{{ displayYear }} at a Glance</h2>
+        <h2 class="section-title">{{ displayYear }}</h2>
       </div>
 
       <!-- Desktop: All Quarter Rows -->
@@ -43,7 +43,7 @@
         <!-- Selected Quarter Display -->
         <div class="selected-quarter-display">
           <div class="quarter-info">
-            <h3 class="quarter-display-title">Q{{ selectedQuarter }} {{ displayYear }}</h3>
+            <h3 class="quarter-display-title">{{ displayYear }} • Q{{ selectedQuarter }}</h3>
             <p class="quarter-display-period">{{ getQuarterPeriod(selectedQuarter) }}</p>
           </div>
 
@@ -72,7 +72,9 @@
       <div v-for="quarter in 4" :key="quarter" class="quarter-card">
         <div class="quarter-header">
           <div class="quarter-title-group">
-            <h3 class="quarter-title">Q{{ quarter }} {{ displayYear }}</h3>
+            <h3 class="quarter-title">
+              {{ displayYear }} <span class="separator">•</span> Q{{ quarter }}
+            </h3>
             <p class="quarter-period">{{ getQuarterPeriod(quarter) }}</p>
           </div>
           <button
