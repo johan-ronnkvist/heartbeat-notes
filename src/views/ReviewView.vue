@@ -3,37 +3,16 @@
     <!-- Yearly Sentiment Overview -->
     <div class="sentiment-overview">
       <div class="overview-header">
-        <h2 class="section-title">
-          <span class="title-full">{{ displayYear }} at a Glance</span>
-          <span class="title-short">{{ displayYear }}</span>
-        </h2>
+        <h2 class="section-title">{{ displayYear }} at a Glance</h2>
       </div>
 
-      <!-- Quarter Selector -->
-      <div class="quarter-selector">
-        <button
-          v-for="quarter in 4"
-          :key="`q-selector-${quarter}`"
-          @click="selectedQuarter = quarter"
-          class="quarter-selector-btn"
-          :class="{ active: selectedQuarter === quarter }"
-        >
-          Q{{ quarter }}
-        </button>
-      </div>
-
-      <!-- Selected Quarter Display -->
-      <div class="selected-quarter-display">
-        <div class="quarter-info">
-          <h3 class="quarter-display-title">Q{{ selectedQuarter }} {{ displayYear }}</h3>
-          <p class="quarter-display-period">{{ getQuarterPeriod(selectedQuarter) }}</p>
-        </div>
-
-        <!-- Week Grid for Selected Quarter -->
-        <div class="quarter-week-grid-wrapper">
-          <div class="quarter-week-grid">
+      <!-- Desktop: All Quarter Rows -->
+      <div class="desktop-glance">
+        <div v-for="quarter in 4" :key="`quarter-${quarter}`" class="quarter-row">
+          <div class="quarter-label">Q{{ quarter }}</div>
+          <div class="week-row">
             <WeekRect
-              v-for="week in getQuarterWeeksForGlance(selectedQuarter)"
+              v-for="week in getQuarterWeeksForGlance(quarter)"
               :key="week"
               :week="week"
               :week-data="getWeekData(week)"
@@ -43,6 +22,46 @@
               show-year-in-tooltip
               @click="navigateToWeek(week)"
             />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: Quarter Selector -->
+      <div class="mobile-glance">
+        <div class="quarter-selector">
+          <button
+            v-for="quarter in 4"
+            :key="`q-selector-${quarter}`"
+            @click="selectedQuarter = quarter"
+            class="quarter-selector-btn"
+            :class="{ active: selectedQuarter === quarter }"
+          >
+            Q{{ quarter }}
+          </button>
+        </div>
+
+        <!-- Selected Quarter Display -->
+        <div class="selected-quarter-display">
+          <div class="quarter-info">
+            <h3 class="quarter-display-title">Q{{ selectedQuarter }} {{ displayYear }}</h3>
+            <p class="quarter-display-period">{{ getQuarterPeriod(selectedQuarter) }}</p>
+          </div>
+
+          <!-- Week Grid for Selected Quarter -->
+          <div class="quarter-week-grid-wrapper">
+            <div class="quarter-week-grid">
+              <WeekRect
+                v-for="week in getQuarterWeeksForGlance(selectedQuarter)"
+                :key="week"
+                :week="week"
+                :week-data="getWeekData(week)"
+                :clickable="isWeekInPast(week)"
+                :disabled="!isWeekInPast(week)"
+                :year="getYearForWeek(week)"
+                show-year-in-tooltip
+                @click="navigateToWeek(week)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -782,12 +801,37 @@ onMounted(() => {
   margin: 0;
 }
 
-.title-full {
-  display: inline;
+/* Desktop glance - all quarters visible */
+.desktop-glance {
+  display: block;
 }
 
-.title-short {
+.mobile-glance {
   display: none;
+}
+
+.quarter-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.quarter-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 2rem;
+  text-align: right;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Toggle Switch */
@@ -1231,6 +1275,10 @@ onMounted(() => {
 }
 
 @media (max-width: 1024px) {
+  .week-row {
+    gap: 0.375rem;
+  }
+
   .quarter-week-grid {
     gap: 0.375rem;
   }
@@ -1255,12 +1303,13 @@ onMounted(() => {
     font-size: 1.125rem;
   }
 
-  .title-full {
+  /* Hide desktop glance, show mobile glance */
+  .desktop-glance {
     display: none;
   }
 
-  .title-short {
-    display: inline;
+  .mobile-glance {
+    display: block;
   }
 
   .quarter-selector {
