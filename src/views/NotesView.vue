@@ -673,9 +673,65 @@ const handleWeekStatusSave = (status: WeekStatus | null) => {
 }
 
 @media (max-width: 768px) {
-  .week-title-row {
+  .notes {
+    padding: 0.75rem;
+  }
+
+  .content-grid {
+    gap: 1rem;
+  }
+
+  .lock-status {
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .lock-status-text {
+    font-size: 0.8125rem;
+  }
+
+  .unlock-button,
+  .lock-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notes {
+    padding: 0.5rem;
+  }
+
+  .content-grid {
+    gap: 0.75rem;
+  }
+
+  .lock-status {
+    gap: 0.375rem;
+    padding: 0.625rem;
+  }
+
+  .lock-status-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .lock-status-text {
+    font-size: 0.75rem;
+  }
+
+  .unlock-button,
+  .lock-button {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+  }
+
+  .button-icon {
+    width: 0.75rem;
+    height: 0.75rem;
   }
 }
 </style>

@@ -3,7 +3,10 @@
     <div class="topbar-container">
       <div class="topbar-left">
         <HeartPulse class="brand-icon" />
-        <h1 class="app-title">Heartbeat Notes</h1>
+        <h1 class="app-title">
+          <span class="app-title-full">Heartbeat Notes</span>
+          <span class="app-title-short">Heartbeat</span>
+        </h1>
       </div>
 
       <nav class="topbar-nav">
@@ -201,6 +204,10 @@ onMounted(() => {
   letter-spacing: -0.025em;
 }
 
+.app-title-short {
+  display: none;
+}
+
 .app-subtitle {
   color: var(--color-theme-primary-light);
   font-size: 0.875rem;
@@ -339,6 +346,20 @@ onMounted(() => {
 
   .nav-list {
     gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title-full {
+    display: none;
+  }
+
+  .app-title-short {
+    display: inline;
+  }
+
+  .app-title {
+    font-size: 1.125rem;
   }
 }
 </style>

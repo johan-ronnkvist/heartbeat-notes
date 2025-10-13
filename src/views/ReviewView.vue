@@ -3,24 +3,66 @@
     <!-- Yearly Sentiment Overview -->
     <div class="sentiment-overview">
       <div class="overview-header">
-        <h2 class="section-title">{{ displayYear }} at a Glance</h2>
+        <h2 class="section-title">{{ displayYear }}</h2>
       </div>
 
-      <!-- Dynamic Quarter Rows -->
-      <div v-for="quarter in 4" :key="`quarter-${quarter}`" class="quarter-row">
-        <div class="quarter-label">Q{{ quarter }}</div>
-        <div class="week-row">
-          <WeekRect
-            v-for="week in getQuarterWeeksForGlance(quarter)"
-            :key="week"
-            :week="week"
-            :week-data="getWeekData(week)"
-            :clickable="isWeekInPast(week)"
-            :disabled="!isWeekInPast(week)"
-            :year="getYearForWeek(week)"
-            show-year-in-tooltip
-            @click="navigateToWeek(week)"
-          />
+      <!-- Desktop: All Quarter Rows -->
+      <div class="desktop-glance">
+        <div v-for="quarter in 4" :key="`quarter-${quarter}`" class="quarter-row">
+          <div class="quarter-label">Q{{ quarter }}</div>
+          <div class="week-row">
+            <WeekRect
+              v-for="week in getQuarterWeeksForGlance(quarter)"
+              :key="week"
+              :week="week"
+              :week-data="getWeekData(week)"
+              :clickable="isWeekInPast(week)"
+              :disabled="!isWeekInPast(week)"
+              :year="getYearForWeek(week)"
+              show-year-in-tooltip
+              @click="navigateToWeek(week)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: Quarter Selector -->
+      <div class="mobile-glance">
+        <div class="quarter-selector">
+          <button
+            v-for="quarter in 4"
+            :key="`q-selector-${quarter}`"
+            @click="selectedQuarter = quarter"
+            class="quarter-selector-btn"
+            :class="{ active: selectedQuarter === quarter }"
+          >
+            Q{{ quarter }}
+          </button>
+        </div>
+
+        <!-- Selected Quarter Display -->
+        <div class="selected-quarter-display">
+          <div class="quarter-info">
+            <h3 class="quarter-display-title">{{ displayYear }} • Q{{ selectedQuarter }}</h3>
+            <p class="quarter-display-period">{{ getQuarterPeriod(selectedQuarter) }}</p>
+          </div>
+
+          <!-- Week Grid for Selected Quarter -->
+          <div class="quarter-week-grid-wrapper">
+            <div class="quarter-week-grid">
+              <WeekRect
+                v-for="week in getQuarterWeeksForGlance(selectedQuarter)"
+                :key="week"
+                :week="week"
+                :week-data="getWeekData(week)"
+                :clickable="isWeekInPast(week)"
+                :disabled="!isWeekInPast(week)"
+                :year="getYearForWeek(week)"
+                show-year-in-tooltip
+                @click="navigateToWeek(week)"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -30,7 +72,9 @@
       <div v-for="quarter in 4" :key="quarter" class="quarter-card">
         <div class="quarter-header">
           <div class="quarter-title-group">
-            <h3 class="quarter-title">Q{{ quarter }} {{ displayYear }}</h3>
+            <h3 class="quarter-title">
+              {{ displayYear }} <span class="separator">•</span> Q{{ quarter }}
+            </h3>
             <p class="quarter-period">{{ getQuarterPeriod(quarter) }}</p>
           </div>
           <button
@@ -150,6 +194,24 @@ const currentYear = ref(new Date().getFullYear())
 const copiedQuarter = ref<number | null>(null)
 const copiedYear = ref(false)
 const showDeleteConfirm = ref(false)
+
+// Selected quarter for at-a-glance view (default to current quarter)
+const selectedQuarter = ref(1)
+
+// Get current quarter based on fiscal year settings
+const getCurrentQuarter = (): number => {
+  const now = new Date()
+  const month = now.getMonth() // 0-11
+
+  if (!isFiscalYearMode.value) {
+    // Calendar year: simple quarter calculation
+    return Math.floor(month / 3) + 1
+  }
+
+  // Fiscal year: calculate based on fiscal year start month
+  const fiscalMonth = (month - fiscalYearStartMonth.value + 12) % 12
+  return Math.floor(fiscalMonth / 3) + 1
+}
 
 // Map of week number to WeeklyData
 const weeklyDataMap = ref<Map<number, WeeklyData>>(new Map())
@@ -683,6 +745,13 @@ onMounted(() => {
   initializeYear()
   loadYearlySentimentData()
   loadYearlyData()
+
+  // Set selected quarter to current quarter if viewing current year
+  const now = new Date()
+  const currentCalendarYear = now.getFullYear()
+  if (currentYear.value === currentCalendarYear) {
+    selectedQuarter.value = getCurrentQuarter()
+  }
 })
 </script>
 
@@ -732,6 +801,39 @@ onMounted(() => {
   font-weight: 600;
   color: #111827;
   margin: 0;
+}
+
+/* Desktop glance - all quarters visible */
+.desktop-glance {
+  display: block;
+}
+
+.mobile-glance {
+  display: none;
+}
+
+.quarter-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  min-width: 0;
+}
+
+.quarter-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 2rem;
+  text-align: right;
+}
+
+.week-row {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Toggle Switch */
@@ -785,28 +887,80 @@ onMounted(() => {
   font-weight: 500;
 }
 
-.quarter-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  min-width: 0;
-}
-
-.quarter-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #6b7280;
-  min-width: 2rem;
-  text-align: right;
-}
-
-.week-row {
+/* Quarter Selector */
+.quarter-selector {
   display: grid;
-  grid-template-columns: repeat(13, 1fr);
-  gap: 0.5rem;
-  flex: 1;
-  min-width: 0;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.quarter-selector-btn {
+  padding: 0.75rem;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+}
+
+.quarter-selector-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.quarter-selector-btn.active {
+  background: var(--color-theme-primary-lightest);
+  border-color: var(--color-theme-primary);
+  color: var(--color-theme-primary-darker);
+}
+
+/* Selected Quarter Display */
+.selected-quarter-display {
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.quarter-info {
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+.quarter-display-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.quarter-display-period {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.quarter-week-grid-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.quarter-week-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+.quarter-week-grid :deep(.week-rect) {
+  flex: 0 0 calc((100% - (6 * 0.375rem)) / 7);
+  max-width: 4rem;
 }
 
 /* Year Controls */
@@ -1126,6 +1280,10 @@ onMounted(() => {
   .week-row {
     gap: 0.375rem;
   }
+
+  .quarter-week-grid {
+    gap: 0.375rem;
+  }
 }
 
 @media (max-width: 1000px) {
@@ -1136,33 +1294,136 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .review {
+    padding: 0.75rem;
+  }
+
+  .sentiment-overview {
     padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.125rem;
+  }
+
+  /* Hide desktop glance, show mobile glance */
+  .desktop-glance {
+    display: none;
+  }
+
+  .mobile-glance {
+    display: block;
+  }
+
+  .quarter-selector {
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .quarter-selector-btn {
+    padding: 0.625rem;
+    font-size: 0.9375rem;
+  }
+
+  .selected-quarter-display {
+    padding: 1rem;
+  }
+
+  .quarter-info {
+    margin-bottom: 1rem;
+  }
+
+  .quarter-display-title {
+    font-size: 1rem;
+  }
+
+  .quarter-display-period {
+    font-size: 0.8125rem;
+  }
+
+  .quarter-week-grid {
+    gap: 0.25rem;
+    max-width: 90%;
   }
 
   .quarters-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .week-row {
-    gap: 0.25rem;
-  }
-
-  .quarter-row {
-    gap: 0.5rem;
-  }
-
-  .quarter-label {
-    min-width: 1.5rem;
-    font-size: 0.75rem;
+  .quarter-card {
+    padding: 1rem;
   }
 
   .quarter-header {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .copy-button {
-    align-self: flex-start;
+    flex-shrink: 0;
+  }
+
+  .quarter-title {
+    font-size: 1rem;
+  }
+
+  .year-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .year-control-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .review {
+    padding: 0.5rem;
+  }
+
+  .sentiment-overview {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .quarter-selector {
+    gap: 0.375rem;
+  }
+
+  .quarter-selector-btn {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .selected-quarter-display {
+    padding: 0.75rem;
+  }
+
+  .quarter-info {
+    margin-bottom: 0.75rem;
+  }
+
+  .quarter-display-title {
+    font-size: 0.9375rem;
+  }
+
+  .quarter-display-period {
+    font-size: 0.75rem;
+  }
+
+  .quarter-week-grid {
+    gap: 0.1875rem;
+    max-width: 100%;
+  }
+
+  .quarter-card {
+    padding: 0.875rem;
   }
 }
 </style>

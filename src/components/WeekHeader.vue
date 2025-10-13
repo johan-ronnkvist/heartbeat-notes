@@ -378,16 +378,157 @@ const getStatusLabel = (status: WeekStatus): string => {
 /* Responsive */
 @media (max-width: 768px) {
   .week-header-card {
-    padding: 1.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
   }
 
   .week-header {
-    flex-direction: column;
-    align-items: stretch;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .week-info {
+    text-align: center;
   }
 
   .week-title {
+    font-size: 1.125rem;
+  }
+
+  .fiscal-year {
+    font-size: 1.125rem;
+  }
+
+  .separator {
+    font-size: 1.125rem;
+  }
+
+  .week-period {
+    font-size: 0.8125rem;
+  }
+
+  .week-title-row {
+    gap: 0.5rem;
+  }
+
+  .calendar-button,
+  .status-settings-button,
+  .sentiment-settings-button {
+    padding: 0.375rem;
+  }
+
+  .calendar-icon,
+  .settings-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .nav-button {
+    padding: 0.375rem;
+  }
+
+  .nav-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .status-emoji {
+    font-size: 3rem;
+  }
+
+  .status-label {
+    font-size: 1.5rem;
+  }
+
+  .sentiment-wrapper,
+  .week-status-display {
+    padding-top: 1rem;
+  }
+
+  .status-settings-button {
+    top: 1rem;
+  }
+
+  .sentiment-settings-button {
+    top: 1rem;
+  }
+
+  .focus-reminder {
+    padding: 0.75rem 1rem;
+  }
+
+  .reminder-title {
+    font-size: 0.8125rem;
+  }
+
+  .reminder-text {
+    font-size: 0.8125rem;
+    padding-left: 1.5rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .week-header-card {
+    padding: 0.75rem;
+  }
+
+  .week-header {
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .week-title {
+    font-size: 1rem;
+  }
+
+  .fiscal-year {
+    font-size: 1rem;
+  }
+
+  .separator {
+    font-size: 1rem;
+  }
+
+  .week-period {
+    font-size: 0.75rem;
+  }
+
+  .week-title-row {
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  .status-content {
+    gap: 1rem;
+    flex-direction: column;
+  }
+
+  .status-emoji {
+    font-size: 2.5rem;
+  }
+
+  .status-label {
     font-size: 1.25rem;
+  }
+
+  .focus-reminder {
+    padding: 0.625rem 0.875rem;
+  }
+
+  .reminder-icon {
+    font-size: 1.125rem;
+  }
+
+  .reminder-title {
+    font-size: 0.75rem;
+  }
+
+  .reminder-text {
+    font-size: 0.75rem;
+    padding-left: 1.375rem;
   }
 }
 </style>
