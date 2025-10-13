@@ -1211,11 +1211,40 @@ async function handleFileSelect(event: Event) {
 
 @media (max-width: 768px) {
   .settings {
+    padding: 0.75rem;
+  }
+
+  .settings-section {
     padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+  }
+
+  .section-description {
+    font-size: 0.8125rem;
+  }
+
+  .preset-buttons {
+    gap: 0.375rem;
+  }
+
+  .preset-button {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8125rem;
+    min-width: 5rem;
+  }
+
+  .color-dot {
+    width: 0.625rem;
+    height: 0.625rem;
   }
 
   .color-preview-row {
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .color-preview-cell {
@@ -1227,16 +1256,48 @@ async function handleFileSelect(event: Event) {
     font-size: 1.5rem;
   }
 
+  .emoji-label {
+    font-size: 0.6875rem;
+  }
+
   .offset-select {
     max-width: 100%;
+    font-size: 0.875rem;
+  }
+
+  .sync-status-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sync-actions {
+    width: 100%;
+  }
+
+  .sync-actions button {
+    flex: 1;
   }
 
   .action-item {
     flex-direction: column;
     align-items: flex-start;
+    padding: 0.875rem 0;
+  }
+
+  .action-title {
+    font-size: 0.875rem;
+  }
+
+  .action-description {
+    font-size: 0.75rem;
   }
 
   .action-button {
+    width: 100%;
+    font-size: 0.875rem;
+  }
+
+  .import-actions {
     width: 100%;
   }
 
@@ -1263,6 +1324,80 @@ async function handleFileSelect(event: Event) {
   .pwa-install-list {
     font-size: 0.8125rem;
     padding-left: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings {
+    padding: 0.5rem;
+  }
+
+  .settings-section {
+    padding: 0.875rem;
+  }
+
+  .section-title {
+    font-size: 0.9375rem;
+  }
+
+  .section-description {
+    font-size: 0.75rem;
+  }
+
+  .preset-button {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.75rem;
+    min-width: 4.5rem;
+  }
+
+  .color-preview-row {
+    gap: 0.375rem;
+  }
+
+  .color-preview-cell {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .cell-emoji {
+    font-size: 1.25rem;
+  }
+
+  .emoji-label {
+    font-size: 0.625rem;
+  }
+
+  .pwa-prompt {
+    padding: 1.25rem 0.875rem;
+  }
+
+  .pwa-prompt-icon {
+    font-size: 2rem;
+  }
+
+  .pwa-prompt-title {
+    font-size: 0.9375rem;
+  }
+
+  .pwa-prompt-text {
+    font-size: 0.8125rem;
+  }
+
+  .pwa-install-steps {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .pwa-install-title {
+    font-size: 0.8125rem;
+  }
+
+  .pwa-install-list {
+    font-size: 0.75rem;
+  }
+
+  .action-button {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
   }
 }
 </style>
