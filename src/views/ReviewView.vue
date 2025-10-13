@@ -782,6 +782,10 @@ onMounted(() => {
   margin: 0;
 }
 
+.title-full {
+  display: inline;
+}
+
 .title-short {
   display: none;
 }
