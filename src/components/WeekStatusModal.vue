@@ -235,22 +235,77 @@ const selectStatus = (status: WeekStatus | null) => {
 }
 
 @media (max-width: 640px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
   .modal-content {
     max-width: 100%;
     border-radius: 0.5rem;
+    max-height: 95vh;
   }
 
-  .modal-header,
+  .modal-header {
+    padding: 1rem;
+  }
+
   .modal-body {
     padding: 1rem;
   }
 
+  .modal-title {
+    font-size: 1.125rem;
+  }
+
+  .modal-description {
+    font-size: 0.8125rem;
+    margin-bottom: 1rem;
+  }
+
   .status-buttons {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .status-button {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.875rem;
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .status-icon {
+    font-size: 2rem;
+    margin-bottom: 0;
+  }
+
+  .status-label {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header {
+    padding: 0.75rem;
+  }
+
+  .modal-body {
+    padding: 0.75rem;
+  }
+
+  .modal-title {
+    font-size: 1rem;
+  }
+
+  .status-button {
+    padding: 0.875rem 0.75rem;
+  }
+
+  .status-icon {
+    font-size: 1.75rem;
+  }
+
+  .status-label {
+    font-size: 0.875rem;
   }
 }
 </style>

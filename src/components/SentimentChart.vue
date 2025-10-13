@@ -46,13 +46,15 @@
           :key="`point-${index}`"
           :transform="`translate(${point.x}, ${point.y})`"
         >
-          <!-- Hover circle (invisible, for better hover area) -->
+          <!-- Hover/Touch circle (invisible, for better interaction area) -->
           <circle
             r="20"
             fill="transparent"
             class="hover-area"
             @mouseenter="hoveredIndex = index"
             @mouseleave="hoveredIndex = null"
+            @touchstart.prevent="handleTouchStart(index)"
+            @touchend.prevent="handleTouchEnd(index)"
             @click="handlePointClick(index)"
           />
           <!-- Emoji -->
@@ -64,6 +66,8 @@
             :class="{ hovered: hoveredIndex === index }"
             @mouseenter="hoveredIndex = index"
             @mouseleave="hoveredIndex = null"
+            @touchstart.prevent="handleTouchStart(index)"
+            @touchend.prevent="handleTouchEnd(index)"
             @click="handlePointClick(index)"
           >
             {{ point.emoji }}
@@ -128,6 +132,7 @@ const emit = defineEmits<{
 }>()
 
 const hoveredIndex = ref<number | null>(null)
+let touchTimer: number | null = null
 
 // Handle point click
 const handlePointClick = (index: number) => {
@@ -135,6 +140,24 @@ const handlePointClick = (index: number) => {
   if (weekData) {
     emit('weekClick', weekData)
   }
+}
+
+// Handle touch start - show tooltip
+const handleTouchStart = (index: number) => {
+  hoveredIndex.value = index
+  // Clear any existing timer
+  if (touchTimer !== null) {
+    clearTimeout(touchTimer)
+  }
+}
+
+// Handle touch end - navigate after brief delay
+const handleTouchEnd = (index: number) => {
+  // Keep tooltip visible briefly, then navigate
+  touchTimer = window.setTimeout(() => {
+    hoveredIndex.value = null
+    handlePointClick(index)
+  }, 300)
 }
 
 // Chart dimensions - use viewBox to make it responsive
@@ -337,5 +360,36 @@ const areaPath = computed(() => {
 .simple-chart {
   --color-sentiment-line: var(--color-theme-primary, #dc2626);
   --color-sentiment-fill: var(--color-theme-primary, #dc2626);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .emoji-point {
+    font-size: 28px !important;
+  }
+
+  .emoji-point.hovered {
+    font-size: 32px !important;
+  }
+
+  /* Larger touch targets on mobile */
+  .hover-area {
+    r: 25;
+  }
+}
+
+@media (max-width: 480px) {
+  .emoji-point {
+    font-size: 24px !important;
+  }
+
+  .emoji-point.hovered {
+    font-size: 28px !important;
+  }
+
+  /* Even larger touch targets on small mobile */
+  .hover-area {
+    r: 30;
+  }
 }
 </style>

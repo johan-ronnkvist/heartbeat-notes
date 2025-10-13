@@ -315,30 +315,119 @@ watch(
 }
 
 @media (max-width: 768px) {
+  .date-picker-overlay {
+    padding: 0.5rem;
+  }
+
   .date-picker-modal {
-    padding: 1.5rem;
+    padding: 1rem;
+    max-height: 95vh;
+    border-radius: 0.75rem;
+  }
+
+  .date-picker-header {
+    margin-bottom: 1rem;
+  }
+
+  .date-picker-title {
+    font-size: 1.125rem;
+  }
+
+  .close-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .year-selector {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    gap: 0.75rem;
+  }
+
+  .year-display {
+    font-size: 1.125rem;
+    min-width: 5rem;
+  }
+
+  .year-nav-button {
+    padding: 0.375rem;
+  }
+
+  .year-nav-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .week-grid {
+    gap: 0.75rem;
+  }
+
+  .quarter-section {
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.5rem;
+  }
+
+  .quarter-label {
+    font-size: 0.75rem;
   }
 
   .weeks-row {
     gap: 0.25rem;
   }
+}
 
-  .quarter-section {
-    gap: 0.5rem;
+@media (max-width: 480px) {
+  .date-picker-overlay {
+    padding: 0.25rem;
   }
 
-  .quarter-label {
-    min-width: 1.5rem;
-    font-size: 0.75rem;
+  .date-picker-modal {
+    padding: 0.75rem;
   }
 
-  .week-emoji {
+  .date-picker-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .date-picker-title {
     font-size: 1rem;
+  }
+
+  .close-button {
+    padding: 0.375rem;
+  }
+
+  .close-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .year-selector {
+    padding: 0.625rem;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
   }
 
   .year-display {
     font-size: 1rem;
-    min-width: 6rem;
+    min-width: 4rem;
+  }
+
+  .week-grid {
+    gap: 0.5rem;
+  }
+
+  .quarter-section {
+    grid-template-columns: 1.25rem 1fr;
+    gap: 0.375rem;
+  }
+
+  .quarter-label {
+    font-size: 0.6875rem;
+  }
+
+  .weeks-row {
+    gap: 0.1875rem;
   }
 }
 </style>

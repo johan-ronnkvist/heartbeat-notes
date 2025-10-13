@@ -77,12 +77,33 @@
     <!-- Last 8 Weeks Sentiment Chart -->
     <div class="chart-section">
       <h3 class="section-title">Recent Weeks</h3>
-      <div class="chart-container">
+
+      <!-- Desktop Chart View -->
+      <div class="chart-container desktop-only">
         <SentimentChart
           :weekly-data="chartWeeks"
           :emoji-scale="emojiScale"
           @week-click="handleWeekClick"
         />
+      </div>
+
+      <!-- Mobile List View -->
+      <div class="mobile-weeks-list mobile-only">
+        <div
+          v-for="week in mobileRecentWeeks"
+          :key="`${week.year}-${week.week}`"
+          class="mobile-week-card"
+          @click="handleWeekClick(week)"
+        >
+          <div class="mobile-week-emoji">
+            {{ getWeekEmoji(week) }}
+          </div>
+          <div class="mobile-week-info">
+            <div class="mobile-week-label">Week {{ week.week }}</div>
+            <div class="mobile-week-year">{{ week.year }}</div>
+          </div>
+          <ChevronRight class="mobile-week-arrow" />
+        </div>
       </div>
     </div>
   </div>
@@ -91,7 +112,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { NotebookPen } from 'lucide-vue-next'
+import { NotebookPen, ChevronRight } from 'lucide-vue-next'
 import type { WeeklyData, WeekStatus } from '@/utils/db'
 import { useSettingsStore } from '@/stores/settings'
 import { useWeeklyStore } from '@/stores/weekly'
@@ -105,7 +126,7 @@ import SentimentChart from '@/components/SentimentChart.vue'
 import WeekHeader from '@/components/WeekHeader.vue'
 import WeekDatePicker from '@/components/WeekDatePicker.vue'
 import WeekStatusModal from '@/components/WeekStatusModal.vue'
-import { EMOJI_SCALE } from '@/constants/sentiment'
+import { EMOJI_SCALE, WEEK_STATUS_EMOJIS } from '@/constants/sentiment'
 
 const settingsStore = useSettingsStore()
 const weeklyStore = useWeeklyStore()
@@ -204,6 +225,11 @@ const chartWeeks = computed(() => {
   }
 
   return weeks
+})
+
+// Mobile view: show only 4 most recent weeks in reverse order (newest first)
+const mobileRecentWeeks = computed(() => {
+  return [...chartWeeks.value].slice(-4).reverse()
 })
 
 // Month completion (removed from UI but kept for potential future use)
@@ -363,6 +389,16 @@ const handleWeekStatusSave = async (status: WeekStatus | null) => {
   weeklyStore.updateWeekState(status)
   await weeklyStore.saveCurrentWeek()
   currentWeekData.value = weeklyStore.currentWeekData
+}
+
+// Get emoji for a week (for mobile list view)
+const getWeekEmoji = (week: WeeklyData): string => {
+  if (typeof week.weekState === 'string') {
+    return WEEK_STATUS_EMOJIS[week.weekState as keyof typeof WEEK_STATUS_EMOJIS]
+  } else if (typeof week.weekState === 'number') {
+    return emojiScale[week.weekState - 1]
+  }
+  return '📅'
 }
 
 // Handle week click from chart
@@ -600,18 +636,195 @@ onMounted(() => {
   position: relative;
 }
 
+/* Mobile weeks list (hidden on desktop) */
+.mobile-weeks-list {
+  display: none;
+}
+
+.mobile-week-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mobile-week-card:hover {
+  background: #f3f4f6;
+  transform: translateX(4px);
+}
+
+.mobile-week-card:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-week-emoji {
+  font-size: 2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mobile-week-info {
+  flex: 1;
+}
+
+.mobile-week-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.mobile-week-year {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
+.mobile-week-arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+/* Show/hide for desktop vs mobile */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .home {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
   .stats-row {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .chart-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
   }
 
   .chart-container {
-    height: 200px;
+    height: 180px;
+  }
+
+  /* Switch to mobile list view */
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  .mobile-week-card {
+    padding: 0.875rem;
+    gap: 0.875rem;
+  }
+
+  .mobile-week-emoji {
+    font-size: 1.75rem;
+  }
+
+  .mobile-week-label {
+    font-size: 0.875rem;
+  }
+
+  .mobile-week-year {
+    font-size: 0.75rem;
+  }
+
+  .mobile-week-arrow {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .home {
+    padding: 0.5rem;
+  }
+
+  .stats-row {
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+  }
+
+  .stat-sublabel {
+    font-size: 0.6875rem;
+  }
+
+  .chart-section {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 0.9375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .chart-container {
+    height: 160px;
+  }
+
+  .mobile-week-card {
+    padding: 0.75rem;
+    gap: 0.75rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .mobile-week-emoji {
+    font-size: 1.5rem;
+  }
+
+  .mobile-week-label {
+    font-size: 0.8125rem;
+  }
+
+  .mobile-week-year {
+    font-size: 0.6875rem;
+  }
+
+  .mobile-week-arrow {
+    width: 1rem;
+    height: 1rem;
   }
 }
 </style>
