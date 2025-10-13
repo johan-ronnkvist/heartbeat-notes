@@ -1355,13 +1355,13 @@ onMounted(() => {
   }
 
   .quarter-header {
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     gap: 0.5rem;
   }
 
   .copy-button {
-    align-self: flex-start;
+    flex-shrink: 0;
   }
 
   .quarter-title {
