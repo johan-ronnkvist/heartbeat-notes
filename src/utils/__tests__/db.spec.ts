@@ -32,9 +32,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: 'Achievement 1',
-        learnings: 'Learning 1',
         challenges: 'Challenge 1',
-        nextWeekFocus: 'Test focus',
         weekState: 4,
         createdAt: new Date('2025-04-01'),
         updatedAt: new Date('2025-04-01'),
@@ -47,9 +45,7 @@ describe('HeartbeatNotesDB', () => {
       expect(retrieved?.year).toBe(2025)
       expect(retrieved?.week).toBe(14)
       expect(retrieved?.achievements).toBe('Achievement 1')
-      expect(retrieved?.learnings).toBe('Learning 1')
       expect(retrieved?.challenges).toBe('Challenge 1')
-      expect(retrieved?.nextWeekFocus).toBe('Test focus')
       expect(retrieved?.weekState).toBe(4)
     })
 
@@ -58,9 +54,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: 'Achievement 1',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: 'Original focus',
         weekState: 3,
         createdAt: new Date('2025-04-01'),
         updatedAt: new Date('2025-04-01'),
@@ -71,7 +65,6 @@ describe('HeartbeatNotesDB', () => {
       const updatedData: WeeklyData = {
         ...weekData,
         achievements: 'Achievement 1\nAchievement 2',
-        nextWeekFocus: 'Updated focus',
         weekState: 5,
       }
 
@@ -79,7 +72,6 @@ describe('HeartbeatNotesDB', () => {
       const retrieved = await db.getWeek(2025, 14)
 
       expect(retrieved?.achievements).toBe('Achievement 1\nAchievement 2')
-      expect(retrieved?.nextWeekFocus).toBe('Updated focus')
       expect(retrieved?.weekState).toBe(5)
     })
 
@@ -89,9 +81,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: oldDate,
         updatedAt: oldDate,
@@ -108,9 +98,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: undefined,
         updatedAt: undefined,
@@ -134,9 +122,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: 'Test',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -154,10 +140,8 @@ describe('HeartbeatNotesDB', () => {
       await db.saveWeek({
         year: 2024,
         week: 52,
-        achievements: '',
-        learnings: '',
+        achievements: '2024-W52',
         challenges: '',
-        nextWeekFocus: '2024-W52',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -166,10 +150,8 @@ describe('HeartbeatNotesDB', () => {
       await db.saveWeek({
         year: 2025,
         week: 1,
-        achievements: '',
-        learnings: '',
+        achievements: '2025-W01',
         challenges: '',
-        nextWeekFocus: '2025-W01',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -178,8 +160,8 @@ describe('HeartbeatNotesDB', () => {
       const week2024 = await db.getWeek(2024, 52)
       const week2025 = await db.getWeek(2025, 1)
 
-      expect(week2024?.nextWeekFocus).toBe('2024-W52')
-      expect(week2025?.nextWeekFocus).toBe('2025-W01')
+      expect(week2024?.achievements).toBe('2024-W52')
+      expect(week2025?.achievements).toBe('2025-W01')
     })
   })
 
@@ -189,9 +171,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 14,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -220,9 +200,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 1,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -232,9 +210,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 2,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -244,9 +220,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2024,
         week: 52,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -269,9 +243,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2024,
         week: 52,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -281,9 +253,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 1,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -293,9 +263,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 2,
         achievements: '',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -347,9 +315,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 20,
         achievements: htmlContent,
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -367,9 +333,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 21,
         achievements: htmlContent,
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -387,9 +351,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 22,
         achievements: '',
-        learnings: htmlContent,
-        challenges: '',
-        nextWeekFocus: '',
+        challenges: htmlContent,
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -398,7 +360,7 @@ describe('HeartbeatNotesDB', () => {
       await db.saveWeek(weekData)
       const retrieved = await db.getWeek(2025, 22)
 
-      expect(retrieved?.learnings).toBe(htmlContent)
+      expect(retrieved?.challenges).toBe(htmlContent)
     })
 
     it('should preserve bullet and numbered lists', async () => {
@@ -408,9 +370,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 23,
         achievements: bulletList,
-        learnings: numberedList,
-        challenges: '',
-        nextWeekFocus: '',
+        challenges: numberedList,
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -420,7 +380,7 @@ describe('HeartbeatNotesDB', () => {
       const retrieved = await db.getWeek(2025, 23)
 
       expect(retrieved?.achievements).toBe(bulletList)
-      expect(retrieved?.learnings).toBe(numberedList)
+      expect(retrieved?.challenges).toBe(numberedList)
     })
 
     it('should preserve task lists with checkboxes', async () => {
@@ -430,9 +390,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 24,
         achievements: taskList,
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -450,10 +408,8 @@ describe('HeartbeatNotesDB', () => {
       const weekData: WeeklyData = {
         year: 2025,
         week: 25,
-        achievements: '',
-        learnings: '',
+        achievements: htmlContent,
         challenges: '',
-        nextWeekFocus: htmlContent,
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -462,7 +418,7 @@ describe('HeartbeatNotesDB', () => {
       await db.saveWeek(weekData)
       const retrieved = await db.getWeek(2025, 25)
 
-      expect(retrieved?.nextWeekFocus).toBe(htmlContent)
+      expect(retrieved?.achievements).toBe(htmlContent)
     })
 
     it('should preserve complex mixed formatting', async () => {
@@ -472,9 +428,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 26,
         achievements: '',
-        learnings: '',
         challenges: complexHtml,
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -492,9 +446,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 27,
         achievements: htmlWithEntities,
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -517,9 +469,7 @@ describe('HeartbeatNotesDB', () => {
         year: 2025,
         week: 28,
         achievements: combinedAchievements,
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),

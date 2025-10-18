@@ -108,15 +108,6 @@
             ></div>
           </div>
 
-          <!-- Learnings -->
-          <div v-if="getQuarterData(quarter, 'learnings')" class="quarter-section">
-            <h4 class="section-subtitle">Learnings</h4>
-            <div
-              class="rich-content"
-              v-html="renderMarkdown(getQuarterData(quarter, 'learnings'))"
-            ></div>
-          </div>
-
           <!-- Challenges -->
           <div v-if="getQuarterData(quarter, 'challenges')" class="quarter-section">
             <h4 class="section-subtitle">Challenges</h4>
@@ -519,7 +510,6 @@ const getQuarterWeekCount = (quarter: number): number => {
 // Copy quarter notes to clipboard
 const copyQuarterNotes = async (quarter: number) => {
   const achievements = getQuarterData(quarter, 'achievements')
-  const learnings = getQuarterData(quarter, 'learnings')
   const challenges = getQuarterData(quarter, 'challenges')
 
   let text = `Q${quarter} ${displayYear.value} - ${getQuarterPeriod(quarter)}\n\n`
@@ -538,10 +528,6 @@ const copyQuarterNotes = async (quarter: number) => {
 
   if (achievements) {
     text += `Accomplishments:\n${markdownToPlainText(achievements)}\n\n`
-  }
-
-  if (learnings) {
-    text += `Learnings:\n${markdownToPlainText(learnings)}\n\n`
   }
 
   if (challenges) {
@@ -581,15 +567,10 @@ const copyYearNotes = async () => {
       }
 
       const achievements = getQuarterData(quarter, 'achievements')
-      const learnings = getQuarterData(quarter, 'learnings')
       const challenges = getQuarterData(quarter, 'challenges')
 
       if (achievements) {
         text += `Accomplishments:\n${markdownToPlainText(achievements)}\n\n`
-      }
-
-      if (learnings) {
-        text += `Learnings:\n${markdownToPlainText(learnings)}\n\n`
       }
 
       if (challenges) {
@@ -688,10 +669,7 @@ const extractListItems = (markdown: string): string[] => {
 }
 
 // Get aggregated data for a quarter by field type
-const getQuarterData = (
-  quarter: number,
-  field: 'achievements' | 'learnings' | 'challenges',
-): string => {
+const getQuarterData = (quarter: number, field: 'achievements' | 'challenges'): string => {
   const { start, end } = getQuarterWeeks(quarter)
 
   // Get all weeks in this quarter
@@ -738,6 +716,12 @@ watch(
     initializeYear()
     loadYearlySentimentData()
     loadYearlyData()
+
+    // Set selected quarter to current quarter if viewing current year
+    const { fiscalYear } = getCurrentFiscalYearAndWeek(fiscalYearStartMonth.value)
+    if (currentYear.value === fiscalYear) {
+      selectedQuarter.value = getCurrentQuarter()
+    }
   },
 )
 
@@ -747,9 +731,8 @@ onMounted(() => {
   loadYearlyData()
 
   // Set selected quarter to current quarter if viewing current year
-  const now = new Date()
-  const currentCalendarYear = now.getFullYear()
-  if (currentYear.value === currentCalendarYear) {
+  const { fiscalYear } = getCurrentFiscalYearAndWeek(fiscalYearStartMonth.value)
+  if (currentYear.value === fiscalYear) {
     selectedQuarter.value = getCurrentQuarter()
   }
 })

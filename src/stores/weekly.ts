@@ -57,9 +57,7 @@ export const useWeeklyStore = defineStore('weekly', () => {
   function createSnapshot(data: WeeklyData): string {
     return JSON.stringify({
       achievements: data.achievements,
-      learnings: data.learnings,
       challenges: data.challenges,
-      nextWeekFocus: data.nextWeekFocus,
       weekState: data.weekState,
     })
   }
@@ -163,24 +161,10 @@ export const useWeeklyStore = defineStore('weekly', () => {
   }
 
   /**
-   * Update learnings for current week
-   */
-  function updateLearnings(content: string) {
-    updateField('learnings', content)
-  }
-
-  /**
    * Update challenges for current week
    */
   function updateChallenges(content: string) {
     updateField('challenges', content)
-  }
-
-  /**
-   * Update next week's focus for current week
-   */
-  function updateNextWeekFocus(focus: string) {
-    updateField('nextWeekFocus', focus)
   }
 
   /**
@@ -393,9 +377,7 @@ export const useWeeklyStore = defineStore('weekly', () => {
     saveCurrentWeek,
     updateField,
     updateAchievements,
-    updateLearnings,
     updateChallenges,
-    updateNextWeekFocus,
     updateWeekState,
     updateSentiment, // deprecated
     updateWeekStatus, // deprecated
