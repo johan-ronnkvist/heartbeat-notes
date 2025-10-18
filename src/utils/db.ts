@@ -6,7 +6,7 @@ const DB_NAME = 'heartbeat-db'
 const DB_VERSION = 7
 const STORE_NAME = 'weeks'
 
-export type WeekStatus = 'vacation' | 'sick'
+export type WeekStatus = 'vacation' | 'sick' | 'other'
 export type WeekState = number | WeekStatus | null
 
 export interface WeeklyData {

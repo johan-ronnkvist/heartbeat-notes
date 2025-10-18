@@ -13,27 +13,36 @@
 
       <!-- Week info -->
       <div class="week-info">
-        <div class="week-title-row">
-          <h2 class="week-title">
-            <span v-if="fiscalYear" class="fiscal-year">{{ fiscalYear }}</span>
-            <span v-if="fiscalYear" class="separator">•</span>
-            {{ weekTitle }}
-          </h2>
-
-          <!-- Calendar icon for date picker -->
-          <button
-            v-if="showDatePicker"
-            class="calendar-button"
-            @click="openDatePicker"
-            title="Navigate to week"
-          >
-            <Calendar class="calendar-icon" />
-          </button>
-
-          <!-- Lock/Unlock badge (for NotesView) -->
-          <slot name="lock-badge"></slot>
+        <button
+          v-if="showDatePicker"
+          class="week-selector-button"
+          @click="openDatePicker"
+          title="Navigate to week"
+        >
+          <div class="week-title-row">
+            <h2 class="week-title">
+              <span v-if="fiscalYear" class="fiscal-year">{{ fiscalYear }}</span>
+              <span v-if="fiscalYear" class="separator">•</span>
+              {{ weekTitle }}
+            </h2>
+            <ChevronDown class="dropdown-icon" />
+            <!-- Lock/Unlock badge (for NotesView) -->
+            <slot name="lock-badge"></slot>
+          </div>
+          <p class="week-period">{{ weekPeriod }}</p>
+        </button>
+        <div v-else class="week-display">
+          <div class="week-title-row">
+            <h2 class="week-title">
+              <span v-if="fiscalYear" class="fiscal-year">{{ fiscalYear }}</span>
+              <span v-if="fiscalYear" class="separator">•</span>
+              {{ weekTitle }}
+            </h2>
+            <!-- Lock/Unlock badge (for NotesView) -->
+            <slot name="lock-badge"></slot>
+          </div>
+          <p class="week-period">{{ weekPeriod }}</p>
         </div>
-        <p class="week-period">{{ weekPeriod }}</p>
       </div>
 
       <!-- Action slot (for Home link or NotesView navigation) -->
@@ -61,7 +70,7 @@
         :class="{ disabled: sentimentDisabled }"
         title="Week settings"
       >
-        <Settings class="settings-icon" />
+        <MoreVertical class="settings-icon" />
       </button>
       <div class="status-content">
         <span class="status-emoji">{{ WEEK_STATUS_EMOJIS[weekState as WeekStatus] }}</span>
@@ -79,7 +88,7 @@
         :class="{ disabled: sentimentDisabled }"
         title="Week settings"
       >
-        <Settings class="settings-icon" />
+        <MoreVertical class="settings-icon" />
       </button>
       <SentimentSelector
         :model-value="weekStateSentiment"
@@ -100,7 +109,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChevronLeft, ChevronRight, Calendar, Settings } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, ChevronDown, MoreVertical } from 'lucide-vue-next'
 import SentimentSelector from './SentimentSelector.vue'
 import { WEEK_STATUS_EMOJIS } from '@/constants/sentiment'
 import type { WeekStatus, WeekState } from '@/utils/db'
@@ -161,6 +170,7 @@ const getStatusLabel = (status: WeekStatus): string => {
   const labels: Record<WeekStatus, string> = {
     vacation: 'On Vacation',
     sick: 'Sick Leave',
+    other: 'Other',
   }
   return labels[status]
 }
@@ -221,6 +231,24 @@ const getStatusLabel = (status: WeekStatus): string => {
   text-align: center;
 }
 
+.week-selector-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.week-selector-button:hover {
+  opacity: 0.7;
+}
+
+.week-display {
+  width: 100%;
+}
+
 .week-title-row {
   display: flex;
   align-items: center;
@@ -257,28 +285,11 @@ const getStatusLabel = (status: WeekStatus): string => {
   margin: 0;
 }
 
-.calendar-button {
-  background: white;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem;
-  cursor: pointer;
-  color: #6b7280;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.calendar-button:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
-  color: #111827;
-}
-
-.calendar-icon {
+.dropdown-icon {
   width: 1.25rem;
   height: 1.25rem;
+  color: #6b7280;
+  flex-shrink: 0;
 }
 
 /* Week Status Display - Hero Element */
@@ -412,13 +423,16 @@ const getStatusLabel = (status: WeekStatus): string => {
     gap: 0.5rem;
   }
 
-  .calendar-button,
+  .dropdown-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
   .status-settings-button,
   .sentiment-settings-button {
     padding: 0.375rem;
   }
 
-  .calendar-icon,
   .settings-icon {
     width: 1.125rem;
     height: 1.125rem;

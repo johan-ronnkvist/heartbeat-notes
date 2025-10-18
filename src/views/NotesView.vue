@@ -77,7 +77,7 @@
         <div class="section-content">
           <RichTextEditor
             v-model="accomplishments"
-            placeholder="Add an accomplishment..."
+            placeholder="Accomplishments from this week..."
             :disabled="!isEditable"
           />
         </div>
@@ -99,7 +99,7 @@
         <div class="section-content">
           <RichTextEditor
             v-model="challenges"
-            placeholder="Describe a challenge or blocker..."
+            placeholder="Challenges from this week..."
             :disabled="!isEditable"
           />
         </div>

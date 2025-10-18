@@ -37,7 +37,7 @@
           :disabled="disabled"
           type="button"
         >
-          ←
+          ‹
         </button>
 
         <!-- Previous emoji (exiting) -->
@@ -82,7 +82,7 @@
         </div>
 
         <div v-if="!modelValue && !isTransitioning" class="large-emoji-placeholder">
-          <span class="placeholder-text">← Swipe or tap →</span>
+          <span class="placeholder-emoji">❓</span>
         </div>
 
         <button
@@ -93,7 +93,7 @@
           :disabled="disabled"
           type="button"
         >
-          →
+          ›
         </button>
       </div>
 
@@ -479,12 +479,10 @@ const handleArrowClick = (direction: 'left' | 'right') => {
   background-color: #f9fafb;
 }
 
-.placeholder-text {
-  font-size: 0.875rem;
-  color: #9ca3af;
-  font-weight: 500;
-  text-align: center;
-  padding: 0 1rem;
+.placeholder-emoji {
+  font-size: 5rem;
+  line-height: 1;
+  opacity: 0.3;
 }
 
 .selected-label {
@@ -595,8 +593,8 @@ const handleArrowClick = (direction: 'left' | 'right') => {
     border-radius: 1.25rem;
   }
 
-  .placeholder-text {
-    font-size: 0.8125rem;
+  .placeholder-emoji {
+    font-size: 4rem;
   }
 
   .selected-label {

@@ -41,6 +41,16 @@
             <div class="status-icon">🤒</div>
             <div class="status-label">Sick Leave</div>
           </button>
+
+          <button
+            class="status-button"
+            :class="{ active: localWeekStatus === 'other' }"
+            :disabled="!isEditable"
+            @click="selectStatus('other')"
+          >
+            <div class="status-icon">📝</div>
+            <div class="status-label">Other</div>
+          </button>
         </div>
 
         <div v-if="!isEditable" class="info-message">
@@ -172,7 +182,7 @@ const selectStatus = (status: WeekStatus | null) => {
 
 .status-buttons {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
