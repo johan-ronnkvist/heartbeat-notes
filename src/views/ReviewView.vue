@@ -738,6 +738,12 @@ watch(
     initializeYear()
     loadYearlySentimentData()
     loadYearlyData()
+
+    // Set selected quarter to current quarter if viewing current year
+    const { fiscalYear } = getCurrentFiscalYearAndWeek(fiscalYearStartMonth.value)
+    if (currentYear.value === fiscalYear) {
+      selectedQuarter.value = getCurrentQuarter()
+    }
   },
 )
 
@@ -747,9 +753,8 @@ onMounted(() => {
   loadYearlyData()
 
   // Set selected quarter to current quarter if viewing current year
-  const now = new Date()
-  const currentCalendarYear = now.getFullYear()
-  if (currentYear.value === currentCalendarYear) {
+  const { fiscalYear } = getCurrentFiscalYearAndWeek(fiscalYearStartMonth.value)
+  if (currentYear.value === fiscalYear) {
     selectedQuarter.value = getCurrentQuarter()
   }
 })
