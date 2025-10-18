@@ -65,9 +65,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 1,
         achievements: 'Achievement 1',
-        learnings: 'Learning 1',
         challenges: 'Challenge 1',
-        nextWeekFocus: 'Focus 1',
         weekState: 4,
         createdAt: new Date('2025-01-01'),
         updatedAt: new Date('2025-01-02'),
@@ -77,9 +75,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 2,
         achievements: 'Achievement 2',
-        learnings: 'Learning 2',
         challenges: 'Challenge 2',
-        nextWeekFocus: 'Focus 2',
         weekState: 5,
         createdAt: new Date('2025-01-08'),
         updatedAt: new Date('2025-01-09'),
@@ -131,9 +127,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 10,
         achievements: '**Bold achievement**',
-        learnings: '- Item 1\n- Item 2',
         challenges: '```\nconst x = 1;\n```',
-        nextWeekFocus: '## Focus heading',
         weekState: 3,
         createdAt: new Date('2025-03-01'),
         updatedAt: new Date('2025-03-01'),
@@ -146,9 +140,7 @@ describe('exportImport', () => {
       const data = JSON.parse(text) as ExportData
 
       expect(data.weeks[0].achievements).toBe('**Bold achievement**')
-      expect(data.weeks[0].learnings).toBe('- Item 1\n- Item 2')
       expect(data.weeks[0].challenges).toBe('```\nconst x = 1;\n```')
-      expect(data.weeks[0].nextWeekFocus).toBe('## Focus heading')
     })
   })
 
@@ -239,9 +231,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 1,
             achievements: 'Test achievement',
-            learnings: 'Test learning',
             challenges: 'Test challenge',
-            nextWeekFocus: 'Test focus',
             weekState: 4,
             createdAt: new Date('2025-01-01'),
             updatedAt: new Date('2025-01-02'),
@@ -271,9 +261,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 1,
             achievements: 'Week 1',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: null,
             createdAt: new Date('2025-01-01'),
             updatedAt: new Date('2025-01-01'),
@@ -282,9 +270,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 2,
             achievements: 'Week 2',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: null,
             createdAt: new Date('2025-01-08'),
             updatedAt: new Date('2025-01-08'),
@@ -293,9 +279,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 3,
             achievements: 'Week 3',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: null,
             createdAt: new Date('2025-01-15'),
             updatedAt: new Date('2025-01-15'),
@@ -367,9 +351,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 5,
             achievements: '',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: null,
             createdAt: new Date('2025-02-01T10:00:00.000Z'),
             updatedAt: new Date('2025-02-01T12:00:00.000Z'),
@@ -397,9 +379,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 15,
             achievements: '**Bold text**',
-            learnings: '- List item',
             challenges: '```\ncode block\n```',
-            nextWeekFocus: '## Heading',
             weekState: 3,
             createdAt: new Date('2025-04-01'),
             updatedAt: new Date('2025-04-01'),
@@ -415,9 +395,7 @@ describe('exportImport', () => {
 
       const week = await db.getWeek(2025, 15)
       expect(week?.achievements).toBe('**Bold text**')
-      expect(week?.learnings).toBe('- List item')
       expect(week?.challenges).toBe('```\ncode block\n```')
-      expect(week?.nextWeekFocus).toBe('## Heading')
     })
 
     it('should handle partial import failures gracefully', async () => {
@@ -429,9 +407,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 1,
             achievements: 'Valid week',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: null,
             createdAt: new Date('2025-01-01'),
             updatedAt: new Date('2025-01-01'),
@@ -458,9 +434,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 10,
         achievements: 'Original achievement',
-        learnings: 'Original learning',
         challenges: '',
-        nextWeekFocus: '',
         weekState: 3,
         createdAt: new Date('2025-03-01'),
         updatedAt: new Date('2025-03-01'),
@@ -475,9 +449,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 10,
             achievements: 'Imported achievement',
-            learnings: 'Imported learning',
             challenges: 'Imported challenge',
-            nextWeekFocus: '',
             weekState: 5,
             createdAt: new Date('2025-03-01'),
             updatedAt: new Date('2025-03-02'),
@@ -493,7 +465,6 @@ describe('exportImport', () => {
 
       const week = await db.getWeek(2025, 10)
       expect(week?.achievements).toBe('Imported achievement')
-      expect(week?.learnings).toBe('Imported learning')
       expect(week?.weekState).toBe(5)
     })
   })
@@ -505,9 +476,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 20,
         achievements: '**Achievement 1**',
-        learnings: '- Learning 1',
         challenges: 'Challenge 1',
-        nextWeekFocus: 'Focus 1',
         weekState: 4,
         createdAt: new Date('2025-05-01T10:00:00.000Z'),
         updatedAt: new Date('2025-05-01T12:00:00.000Z'),
@@ -517,9 +486,7 @@ describe('exportImport', () => {
         year: 2025,
         week: 21,
         achievements: 'Achievement 2',
-        learnings: 'Learning 2',
         challenges: '```\nconst x = 1;\n```',
-        nextWeekFocus: '## Focus 2',
         weekState: 5,
         createdAt: new Date('2025-05-08T10:00:00.000Z'),
         updatedAt: new Date('2025-05-08T12:00:00.000Z'),
@@ -555,11 +522,9 @@ describe('exportImport', () => {
       const importedWeek2 = await db.getWeek(2025, 21)
 
       expect(importedWeek1?.achievements).toBe(week1.achievements)
-      expect(importedWeek1?.learnings).toBe(week1.learnings)
       expect(importedWeek1?.weekState).toBe(week1.weekState)
 
       expect(importedWeek2?.challenges).toBe(week2.challenges)
-      expect(importedWeek2?.nextWeekFocus).toBe(week2.nextWeekFocus)
 
       const importedSettings = localStorage.getItem('heartbeat-settings')
       expect(importedSettings).toBeTruthy()
@@ -587,9 +552,7 @@ describe('exportImport', () => {
       expect(week40).toBeTruthy()
       expect(week40?.achievements).toContain('Completed Q4 planning')
       expect(week40?.achievements).toContain('**')
-      expect(week40?.learnings).toContain('IndexedDB')
       expect(week40?.challenges).toContain('performance optimization')
-      expect(week40?.nextWeekFocus).toContain('Focus Areas')
       expect(week40?.weekState).toBe(4)
 
       // Verify week 39 was imported correctly
@@ -636,8 +599,6 @@ describe('exportImport', () => {
       // Check Markdown syntax is preserved
       expect(week40?.achievements).toContain('**')
       expect(week40?.achievements).toContain('- ')
-      expect(week40?.learnings).toContain('`')
-      expect(week40?.nextWeekFocus).toContain('###')
 
       const week39 = await db.getWeek(2025, 39)
       expect(week39?.achievements).toContain('*')
@@ -651,9 +612,10 @@ describe('exportImport', () => {
 
       await importData(file)
 
-      const week39 = await db.getWeek(2025, 39)
-      expect(week39?.learnings).toBe('')
-      expect(week39?.nextWeekFocus).toBe('')
+      const week40 = await db.getWeek(2025, 40)
+      // Verify that empty achievement field is preserved
+      expect(week40).toBeTruthy()
+      expect(week40?.achievements).toBeTruthy()
     })
 
     it('should validate backup file version', async () => {
@@ -681,9 +643,7 @@ describe('exportImport', () => {
             year: 2025,
             week: 1,
             achievements: 'Fixed `<Component />` rendering & state issues',
-            learnings: "SQL: SELECT * FROM users WHERE name = 'O'Reilly'",
-            challenges: '',
-            nextWeekFocus: '',
+            challenges: "SQL: SELECT * FROM users WHERE name = 'O'Reilly'",
             weekState: 3,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -701,7 +661,7 @@ describe('exportImport', () => {
       const week = await db.getWeek(2025, 1)
       expect(week?.achievements).toContain('<Component />')
       expect(week?.achievements).toContain('&')
-      expect(week?.learnings).toContain("O'Reilly")
+      expect(week?.challenges).toContain("O'Reilly")
     })
   })
 })

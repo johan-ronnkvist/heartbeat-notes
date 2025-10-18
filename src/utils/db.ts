@@ -3,7 +3,7 @@
  */
 
 const DB_NAME = 'heartbeat-db'
-const DB_VERSION = 5
+const DB_VERSION = 7
 const STORE_NAME = 'weeks'
 
 export type WeekStatus = 'vacation' | 'sick'
@@ -13,9 +13,7 @@ export interface WeeklyData {
   year: number
   week: number
   achievements: string
-  learnings: string
   challenges: string
-  nextWeekFocus: string
   weekState: WeekState
   createdAt: Date
   updatedAt: Date
@@ -59,31 +57,25 @@ class HeartbeatDB {
           const getAllRequest = store.getAll()
 
           getAllRequest.onsuccess = () => {
-            const allRecords = getAllRequest.result
-            allRecords.forEach(
-              (
-                record: WeeklyData & {
-                  achievements?: string[] | string
-                  learnings?: string[] | string
-                  challenges?: string[] | string
-                },
-              ) => {
-                // Convert arrays to strings
-                const migratedRecord: WeeklyData = {
-                  ...record,
-                  achievements: Array.isArray(record.achievements)
-                    ? record.achievements.join('\n')
-                    : record.achievements || '',
-                  learnings: Array.isArray(record.learnings)
-                    ? record.learnings.join('\n')
-                    : record.learnings || '',
-                  challenges: Array.isArray(record.challenges)
-                    ? record.challenges.join('\n')
-                    : record.challenges || '',
-                }
-                store.put(migratedRecord)
-              },
-            )
+            const allRecords = getAllRequest.result as Array<
+              Record<string, string | string[] | number | Date | null>
+            >
+            allRecords.forEach((record) => {
+              // Convert arrays to strings
+              const migratedRecord = {
+                ...record,
+                achievements: Array.isArray(record.achievements)
+                  ? record.achievements.join('\n')
+                  : record.achievements || '',
+                learnings: Array.isArray(record.learnings)
+                  ? record.learnings.join('\n')
+                  : record.learnings || '',
+                challenges: Array.isArray(record.challenges)
+                  ? record.challenges.join('\n')
+                  : record.challenges || '',
+              }
+              store.put(migratedRecord)
+            })
           }
         } else if (oldVersion < 4) {
           // Migrate data from version 3 to version 4 (add weekStatus field)
@@ -91,22 +83,21 @@ class HeartbeatDB {
           const getAllRequest = store.getAll()
 
           getAllRequest.onsuccess = () => {
-            const allRecords = getAllRequest.result
-            allRecords.forEach(
-              (
-                record: WeeklyData & { weekStatus?: WeekStatus | null; weekStatusNote?: string },
-              ) => {
-                const migratedRecord = {
-                  ...record,
-                  weekStatus: record.weekStatus ?? null,
-                }
-                // Remove weekStatusNote if it exists (from earlier migration attempt)
-                if ('weekStatusNote' in migratedRecord) {
-                  delete (migratedRecord as WeeklyData & { weekStatusNote?: string }).weekStatusNote
-                }
-                store.put(migratedRecord)
-              },
-            )
+            const allRecords = getAllRequest.result as Array<
+              Record<string, string | number | Date | null>
+            >
+            allRecords.forEach((record) => {
+              const migratedRecord = {
+                ...record,
+                weekStatus: record.weekStatus ?? null,
+              }
+              // Remove weekStatusNote if it exists (from earlier migration attempt)
+              if ('weekStatusNote' in migratedRecord) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                delete (migratedRecord as any).weekStatusNote
+              }
+              store.put(migratedRecord)
+            })
           }
         }
 
@@ -116,37 +107,83 @@ class HeartbeatDB {
           const getAllRequest = store.getAll()
 
           getAllRequest.onsuccess = () => {
-            const allRecords = getAllRequest.result
-            allRecords.forEach(
-              (
-                record: { sentiment?: number | null; weekStatus?: WeekStatus | null } & Omit<
-                  WeeklyData,
-                  'weekState'
-                >,
-              ) => {
-                // Priority: weekStatus > sentiment > null
-                let weekState: WeekState = null
-                if (record.weekStatus) {
-                  weekState = record.weekStatus
-                } else if (record.sentiment) {
-                  weekState = record.sentiment
-                }
+            const allRecords = getAllRequest.result as Array<
+              Record<string, string | number | Date | null>
+            >
+            allRecords.forEach((record) => {
+              // Priority: weekStatus > sentiment > null
+              let weekState: WeekState = null
+              if (record.weekStatus && typeof record.weekStatus === 'string') {
+                weekState = record.weekStatus as WeekStatus
+              } else if (record.sentiment && typeof record.sentiment === 'number') {
+                weekState = record.sentiment
+              }
 
-                const migratedRecord: WeeklyData = {
-                  year: record.year,
-                  week: record.week,
-                  achievements: record.achievements,
-                  learnings: record.learnings,
-                  challenges: record.challenges,
-                  nextWeekFocus: record.nextWeekFocus,
-                  weekState,
-                  createdAt: record.createdAt,
-                  updatedAt: record.updatedAt,
-                }
+              const migratedRecord = {
+                year: record.year,
+                week: record.week,
+                achievements: record.achievements,
+                learnings: record.learnings,
+                challenges: record.challenges,
+                nextWeekFocus: record.nextWeekFocus,
+                weekState,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              }
 
-                store.put(migratedRecord)
-              },
-            )
+              store.put(migratedRecord)
+            })
+          }
+        }
+
+        if (oldVersion < 6) {
+          // Migrate from version 5 to version 6 (remove nextWeekFocus field)
+          const store = transaction.objectStore(STORE_NAME)
+          const getAllRequest = store.getAll()
+
+          getAllRequest.onsuccess = () => {
+            const allRecords = getAllRequest.result as Array<
+              Record<string, string | number | Date | WeekState>
+            >
+            allRecords.forEach((record) => {
+              const migratedRecord = {
+                year: record.year,
+                week: record.week,
+                achievements: record.achievements,
+                learnings: record.learnings,
+                challenges: record.challenges,
+                weekState: record.weekState,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              }
+
+              store.put(migratedRecord)
+            })
+          }
+        }
+
+        if (oldVersion < 7) {
+          // Migrate from version 6 to version 7 (remove learnings field)
+          const store = transaction.objectStore(STORE_NAME)
+          const getAllRequest = store.getAll()
+
+          getAllRequest.onsuccess = () => {
+            const allRecords = getAllRequest.result as Array<
+              Record<string, string | number | Date | WeekState>
+            >
+            allRecords.forEach((record) => {
+              const migratedRecord: WeeklyData = {
+                year: record.year as number,
+                week: record.week as number,
+                achievements: record.achievements as string,
+                challenges: record.challenges as string,
+                weekState: record.weekState as WeekState,
+                createdAt: record.createdAt as Date,
+                updatedAt: record.updatedAt as Date,
+              }
+
+              store.put(migratedRecord)
+            })
           }
         }
       }

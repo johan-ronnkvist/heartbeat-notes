@@ -22,17 +22,6 @@
           <NotebookPen class="notes-icon" />
         </router-link>
       </template>
-
-      <template #additional-content>
-        <!-- Next Week's Focus Reminder -->
-        <div v-if="previousWeekFocus" class="focus-reminder">
-          <div class="reminder-header">
-            <span class="reminder-icon">🎯</span>
-            <span class="reminder-title">Last week you planned to focus on:</span>
-          </div>
-          <p class="reminder-text">{{ previousWeekFocus }}</p>
-        </div>
-      </template>
     </WeekHeader>
 
     <!-- Date Picker Modal -->
@@ -141,7 +130,6 @@ const isDatePickerOpen = ref(false)
 const isWeekStatusModalOpen = ref(false)
 
 const currentWeekData = ref<WeeklyData | null>(null)
-const previousWeekData = ref<WeeklyData | null>(null)
 const recentWeeks = ref<WeeklyData[]>([])
 const monthWeeksLogged = ref(0)
 const monthWeeksElapsed = ref(0)
@@ -202,12 +190,6 @@ const currentWeekPeriod = computed(() => {
   }
 
   return `${formatDate(monday)} - ${formatDate(sunday)}`
-})
-
-// Previous week's focus
-const previousWeekFocus = computed(() => {
-  const focus = previousWeekData.value?.nextWeekFocus
-  return focus && focus.trim() ? focus.trim() : null
 })
 
 // Chart data - reactive to current week changes
@@ -422,16 +404,6 @@ const loadData = async () => {
   await weeklyStore.loadCurrentWeek()
   currentWeekData.value = weeklyStore.currentWeekData
 
-  // Load previous week
-  let prevYear = currentWeek.year
-  let prevWeek = currentWeek.week - 1
-  if (prevWeek < 1) {
-    prevWeek = 52
-    prevYear = currentWeek.year - 1
-  }
-  const [previous] = await weeklyStore.loadWeeksBatch([{ year: prevYear, week: prevWeek }])
-  previousWeekData.value = previous
-
   // Load last 8 weeks for chart
   const weeks = await weeklyStore.loadRecentWeeks(8)
   recentWeeks.value = weeks
@@ -503,13 +475,7 @@ const loadData = async () => {
 
   // Count words across all text fields
   totalWordsWritten.value = fiscalYearWeeks.reduce((total, week) => {
-    return (
-      total +
-      countWords(week.achievements) +
-      countWords(week.learnings) +
-      countWords(week.challenges) +
-      countWords(week.nextWeekFocus)
-    )
+    return total + countWords(week.achievements) + countWords(week.challenges)
   }, 0)
 }
 
@@ -545,38 +511,6 @@ onMounted(() => {
 .notes-icon {
   width: 1.25rem;
   height: 1.25rem;
-}
-
-/* Focus Reminder */
-.focus-reminder {
-  background: var(--color-warning-bg);
-  border-left: 4px solid var(--color-warning);
-  padding: 1rem 1.25rem;
-  border-radius: 0.5rem;
-}
-
-.reminder-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.reminder-icon {
-  font-size: 1.25rem;
-}
-
-.reminder-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #92400e;
-}
-
-.reminder-text {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #78350f;
-  padding-left: 1.75rem;
 }
 
 /* Stats Row */

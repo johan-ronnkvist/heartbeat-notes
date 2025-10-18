@@ -81,7 +81,6 @@ function validateImportData(data: unknown): data is ExportData {
       'year' in week &&
       'week' in week &&
       'achievements' in week &&
-      'learnings' in week &&
       'challenges' in week
     )
   })

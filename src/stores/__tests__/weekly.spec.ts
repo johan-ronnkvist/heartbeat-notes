@@ -41,9 +41,7 @@ describe('useWeeklyStore', () => {
         year,
         week,
         achievements: 'Test achievement',
-        learnings: 'Test learning',
         challenges: 'Test challenge',
-        nextWeekFocus: 'Test focus',
         weekState: 4,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -54,9 +52,7 @@ describe('useWeeklyStore', () => {
 
       expect(store.currentWeekData).toBeTruthy()
       expect(store.currentWeekData?.achievements).toBe('Test achievement')
-      expect(store.currentWeekData?.learnings).toBe('Test learning')
       expect(store.currentWeekData?.challenges).toBe('Test challenge')
-      expect(store.currentWeekData?.nextWeekFocus).toBe('Test focus')
       expect(store.currentWeekData?.weekState).toBe(4)
       expect(store.isLoading).toBe(false)
       expect(store.error).toBeNull()
@@ -68,9 +64,7 @@ describe('useWeeklyStore', () => {
 
       expect(store.currentWeekData).toBeTruthy()
       expect(store.currentWeekData?.achievements).toBe('')
-      expect(store.currentWeekData?.learnings).toBe('')
       expect(store.currentWeekData?.challenges).toBe('')
-      expect(store.currentWeekData?.nextWeekFocus).toBe('')
       expect(store.currentWeekData?.weekState).toBeNull()
       expect(store.isLoading).toBe(false)
     })
@@ -120,9 +114,7 @@ describe('useWeeklyStore', () => {
         year: 2024,
         week: 52,
         achievements: 'Year-end achievement',
-        learnings: '',
         challenges: '',
-        nextWeekFocus: '',
         weekState: null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -230,27 +222,6 @@ describe('useWeeklyStore', () => {
     })
   })
 
-  describe('updateLearnings', () => {
-    it('should update learnings for current week', async () => {
-      const store = useWeeklyStore()
-      await store.loadCurrentWeek()
-
-      store.updateLearnings('Learning 1')
-      expect(store.currentWeekData?.learnings).toBe('Learning 1')
-
-      store.updateLearnings('Learning 1 and 2')
-      expect(store.currentWeekData?.learnings).toBe('Learning 1 and 2')
-    })
-
-    it('should do nothing if currentWeekData is null', () => {
-      const store = useWeeklyStore()
-      expect(store.currentWeekData).toBeNull()
-
-      store.updateLearnings('Should not add')
-      expect(store.currentWeekData).toBeNull()
-    })
-  })
-
   describe('updateChallenges', () => {
     it('should update challenges for current week', async () => {
       const store = useWeeklyStore()
@@ -268,27 +239,6 @@ describe('useWeeklyStore', () => {
       expect(store.currentWeekData).toBeNull()
 
       store.updateChallenges('Should not add')
-      expect(store.currentWeekData).toBeNull()
-    })
-  })
-
-  describe('updateNextWeekFocus', () => {
-    it('should update next week focus for current week', async () => {
-      const store = useWeeklyStore()
-      await store.loadCurrentWeek()
-
-      store.updateNextWeekFocus('New focus')
-      expect(store.currentWeekData?.nextWeekFocus).toBe('New focus')
-
-      store.updateNextWeekFocus('Updated focus')
-      expect(store.currentWeekData?.nextWeekFocus).toBe('Updated focus')
-    })
-
-    it('should do nothing if currentWeekData is null', () => {
-      const store = useWeeklyStore()
-      expect(store.currentWeekData).toBeNull()
-
-      store.updateNextWeekFocus('Should not update')
       expect(store.currentWeekData).toBeNull()
     })
   })
@@ -327,9 +277,7 @@ describe('useWeeklyStore', () => {
 
       // Modify data
       store.updateAchievements('Completed feature X')
-      store.updateLearnings('Learned Vue 3 composition API')
       store.updateChallenges('Debugging IndexedDB')
-      store.updateNextWeekFocus('Great week!')
       store.updateSentiment(4)
 
       // Save
@@ -341,9 +289,7 @@ describe('useWeeklyStore', () => {
 
       // Verify data persisted
       expect(newStore.currentWeekData?.achievements).toBe('Completed feature X')
-      expect(newStore.currentWeekData?.learnings).toBe('Learned Vue 3 composition API')
       expect(newStore.currentWeekData?.challenges).toBe('Debugging IndexedDB')
-      expect(newStore.currentWeekData?.nextWeekFocus).toBe('Great week!')
       expect(newStore.currentWeekData?.weekState).toBe(4)
     })
 
@@ -384,19 +330,19 @@ describe('useWeeklyStore', () => {
       expect(newStore.currentWeekData?.achievements).toBe(htmlAchievement)
     })
 
-    it('should preserve HTML formatting in learnings with code blocks', async () => {
+    it('should preserve HTML formatting in achievements with code blocks', async () => {
       const store = useWeeklyStore()
       await store.loadWeek(2025, 30)
 
-      const htmlLearning =
+      const htmlAchievement =
         '<p>Learned how to use IndexedDB:</p><pre><code>const db = indexedDB.open("myDB", 1);</code></pre>'
-      store.updateLearnings(htmlLearning)
+      store.updateAchievements(htmlAchievement)
       await store.saveCurrentWeek()
 
       const newStore = useWeeklyStore()
       await newStore.loadWeek(2025, 30)
 
-      expect(newStore.currentWeekData?.learnings).toBe(htmlLearning)
+      expect(newStore.currentWeekData?.achievements).toBe(htmlAchievement)
     })
 
     it('should preserve HTML formatting in challenges with lists', async () => {
@@ -414,19 +360,19 @@ describe('useWeeklyStore', () => {
       expect(newStore.currentWeekData?.challenges).toBe(htmlChallenge)
     })
 
-    it('should preserve HTML formatting in next week focus with task lists', async () => {
+    it('should preserve HTML formatting in challenges with task lists', async () => {
       const store = useWeeklyStore()
       await store.loadWeek(2025, 32)
 
-      const htmlFocus =
+      const htmlTaskList =
         '<ul data-type="taskList"><li data-checked="true"><label><input type="checkbox" checked="checked"><span></span></label><div><p>Review PR</p></div></li></ul>'
-      store.updateNextWeekFocus(htmlFocus)
+      store.updateChallenges(htmlTaskList)
       await store.saveCurrentWeek()
 
       const newStore = useWeeklyStore()
       await newStore.loadWeek(2025, 32)
 
-      expect(newStore.currentWeekData?.nextWeekFocus).toBe(htmlFocus)
+      expect(newStore.currentWeekData?.challenges).toBe(htmlTaskList)
     })
 
     it('should preserve HTML entities and special characters', async () => {
@@ -470,13 +416,13 @@ describe('useWeeklyStore', () => {
 
       const complexHtml =
         '<h2>Major Milestone</h2><p>Shipped v2.0 with:</p><ol><li><strong>New features</strong>: <ul><li>Feature A</li><li>Feature B</li></ul></li><li><em>Bug fixes</em></li></ol><pre><code>git tag v2.0.0</code></pre>'
-      store.updateNextWeekFocus(complexHtml)
+      store.updateAchievements(complexHtml)
       await store.saveCurrentWeek()
 
       const newStore = useWeeklyStore()
       await newStore.loadWeek(2025, 35)
 
-      expect(newStore.currentWeekData?.nextWeekFocus).toBe(complexHtml)
+      expect(newStore.currentWeekData?.achievements).toBe(complexHtml)
     })
   })
 
@@ -534,11 +480,8 @@ describe('useWeeklyStore', () => {
             year: 2025,
             week: 40,
             achievements: 'Imported achievement',
-            learnings: 'Imported learning',
             challenges: '',
-            nextWeekFocus: '',
-            sentiment: 5,
-            weekStatus: null,
+            weekState: 5,
             createdAt: new Date('2025-10-01'),
             updatedAt: new Date('2025-10-01'),
           },
@@ -572,9 +515,7 @@ describe('useWeeklyStore', () => {
             year,
             week,
             achievements: 'Current week imported',
-            learnings: '',
             challenges: '',
-            nextWeekFocus: '',
             weekState: 3,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -653,11 +594,8 @@ describe('useWeeklyStore', () => {
             year: 2025,
             week: 41,
             achievements: '<p><strong>Bold imported text</strong></p>',
-            learnings: '<ul><li>List item</li></ul>',
             challenges: '<pre><code>code block</code></pre>',
-            nextWeekFocus: '<h2>Heading</h2>',
-            sentiment: 4,
-            weekStatus: null,
+            weekState: 4,
             createdAt: new Date('2025-10-08'),
             updatedAt: new Date('2025-10-08'),
           },
@@ -672,9 +610,7 @@ describe('useWeeklyStore', () => {
 
       const week = await db.getWeek(2025, 41)
       expect(week?.achievements).toBe('<p><strong>Bold imported text</strong></p>')
-      expect(week?.learnings).toBe('<ul><li>List item</li></ul>')
       expect(week?.challenges).toBe('<pre><code>code block</code></pre>')
-      expect(week?.nextWeekFocus).toBe('<h2>Heading</h2>')
     })
   })
 
@@ -685,13 +621,12 @@ describe('useWeeklyStore', () => {
       // Create test data
       await store.loadWeek(2025, 50)
       store.updateAchievements('<p><strong>Week 50 achievement</strong></p>')
-      store.updateLearnings('<ul><li>Learning 1</li></ul>')
+      store.updateChallenges('<ul><li>Challenge 1</li></ul>')
       store.updateSentiment(5)
       await store.saveCurrentWeek()
 
       await store.loadWeek(2025, 51)
       store.updateChallenges('<pre><code>const x = 1;</code></pre>')
-      store.updateNextWeekFocus('<h2>Next focus</h2>')
       await store.saveCurrentWeek()
 
       // Export data (we'll capture the blob)
@@ -715,12 +650,11 @@ describe('useWeeklyStore', () => {
       expect(store.currentWeekData?.achievements).toBe(
         '<p><strong>Week 50 achievement</strong></p>',
       )
-      expect(store.currentWeekData?.learnings).toBe('<ul><li>Learning 1</li></ul>')
+      expect(store.currentWeekData?.challenges).toBe('<ul><li>Challenge 1</li></ul>')
       expect(store.currentWeekData?.weekState).toBe(5)
 
       await store.loadWeek(2025, 51)
       expect(store.currentWeekData?.challenges).toBe('<pre><code>const x = 1;</code></pre>')
-      expect(store.currentWeekData?.nextWeekFocus).toBe('<h2>Next focus</h2>')
     })
   })
 })

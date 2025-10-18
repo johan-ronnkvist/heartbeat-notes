@@ -83,33 +83,11 @@
         </div>
       </section>
 
-      <!-- Learning & Growth -->
+      <!-- Challenges -->
       <section class="card">
         <div class="card-header">
           <div class="card-title-row">
-            <h2 class="card-title">Learning & Growth</h2>
-            <span
-              v-if="weeklyStore.dirtyFields.has('learnings')"
-              class="unsaved-indicator"
-              title="Unsaved changes"
-              >●</span
-            >
-          </div>
-        </div>
-        <div class="section-content">
-          <RichTextEditor
-            v-model="learnings"
-            placeholder="What did you learn this week..."
-            :disabled="!isEditable"
-          />
-        </div>
-      </section>
-
-      <!-- Challenges & Blockers -->
-      <section class="card">
-        <div class="card-header">
-          <div class="card-title-row">
-            <h2 class="card-title">Challenges & Blockers</h2>
+            <h2 class="card-title">Challenges</h2>
             <span
               v-if="weeklyStore.dirtyFields.has('challenges')"
               class="unsaved-indicator"
@@ -122,28 +100,6 @@
           <RichTextEditor
             v-model="challenges"
             placeholder="Describe a challenge or blocker..."
-            :disabled="!isEditable"
-          />
-        </div>
-      </section>
-
-      <!-- Next Week's Focus -->
-      <section class="card">
-        <div class="card-header">
-          <div class="card-title-row">
-            <h2 class="card-title">Next Week's Focus</h2>
-            <span
-              v-if="weeklyStore.dirtyFields.has('nextWeekFocus')"
-              class="unsaved-indicator"
-              title="Unsaved changes"
-              >●</span
-            >
-          </div>
-        </div>
-        <div class="section-content">
-          <RichTextEditor
-            v-model="focus"
-            placeholder="What's your focus for next week..."
             :disabled="!isEditable"
           />
         </div>
@@ -532,26 +488,10 @@ const accomplishments = computed({
   },
 })
 
-const learnings = computed({
-  get: () => weeklyStore.currentWeekData?.learnings ?? '',
-  set: (value: string) => {
-    weeklyStore.updateLearnings(value)
-    debouncedSave()
-  },
-})
-
 const challenges = computed({
   get: () => weeklyStore.currentWeekData?.challenges ?? '',
   set: (value: string) => {
     weeklyStore.updateChallenges(value)
-    debouncedSave()
-  },
-})
-
-const focus = computed({
-  get: () => weeklyStore.currentWeekData?.nextWeekFocus ?? '',
-  set: (value: string) => {
-    weeklyStore.updateNextWeekFocus(value)
     debouncedSave()
   },
 })
